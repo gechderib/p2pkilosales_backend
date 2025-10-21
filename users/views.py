@@ -30,6 +30,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 import jwt
 from datetime import datetime
+from jwt.algorithms import RSAAlgorithm
 
 User = get_user_model()
 
@@ -1169,6 +1170,88 @@ class GoogleSignInView(APIView):
                 error=[f'An error occurred: {str(e)}']
             )
 
+# class AppleSignInView(APIView):
+#     permission_classes = [AllowAny]
+
+#     def post(self, request):
+#         token = request.data.get('token')
+#         if not token:
+#             return standard_response(
+#                 status_code=status.HTTP_400_BAD_REQUEST,
+#                 error=['Apple token is required']
+#             )
+
+#         try:
+#             # Verify the token
+#             headers = {
+#                 'kid': settings.APPLE_KEY_ID
+#             }
+            
+#             # Get Apple's public key
+#             response = requests.get(settings.APPLE_PUBLIC_KEY_URL)
+#             public_key = response.json()
+
+#             # Verify the token
+#             decoded = jwt.decode(
+#                 token,
+#                 public_key,
+#                 algorithms=['RS256'],
+#                 audience=settings.APPLE_BUNDLE_ID,
+#                 issuer='https://appleid.apple.com'
+#             )
+
+#             # Get user info from the token
+#             email = decoded.get('email')
+#             apple_id = decoded['sub']
+
+#             # Try to find existing user
+#             try:
+#                 user = CustomUser.objects.get(email=email)
+#                 # Update Apple ID if not set
+#                 if not user.apple_id:
+#                     user.apple_id = apple_id
+#                     user.save()
+#             except CustomUser.DoesNotExist:
+#                 # Create new user
+#                 username = email.split('@')[0]
+#                 # Ensure username is unique
+#                 base_username = username
+#                 counter = 1
+#                 while CustomUser.objects.filter(username=username).exists():
+#                     username = f"{base_username}{counter}"
+#                     counter += 1
+
+#                 user = CustomUser.objects.create(
+#                     email=email,
+#                     username=username,
+#                     apple_id=apple_id,
+#                     is_email_verified=True  # Email is verified by Apple
+#                 )
+
+#             # Generate tokens
+#             refresh = RefreshToken.for_user(user)
+            
+#             return standard_response(
+#                 data={
+#                     'access': str(refresh.access_token),
+#                     'refresh': str(refresh),
+#                     'user': UserSerializer(user).data
+#                 },
+#                 status_code=status.HTTP_200_OK
+#             )
+
+#         except jwt.InvalidTokenError as e:
+#             return standard_response(
+#                 status_code=status.HTTP_400_BAD_REQUEST,
+#                 error=[f'Invalid token: {str(e)}']
+#             )
+#         except Exception as e:
+#             return standard_response(
+#                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#                 error=[f'An error occurred: {str(e)}']
+#             )
+
+
 class AppleSignInView(APIView):
     permission_classes = [AllowAny]
 
@@ -1181,16 +1264,24 @@ class AppleSignInView(APIView):
             )
 
         try:
-            # Verify the token
-            headers = {
-                'kid': settings.APPLE_KEY_ID
-            }
-            
-            # Get Apple's public key
-            response = requests.get(settings.APPLE_PUBLIC_KEY_URL)
-            public_key = response.json()
+            # Extract headers from the token
+            header = jwt.get_unverified_header(token)
 
-            # Verify the token
+            # Get Apple’s public keys
+            response = requests.get(settings.APPLE_PUBLIC_KEY_URL)  # https://appleid.apple.com/auth/keys
+            keys = response.json()["keys"]
+
+            # Find the correct key
+            key = next((k for k in keys if k["kid"] == header["kid"]), None)
+            if not key:
+                return standard_response(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    error=['Unable to find matching Apple public key']
+                )
+
+            public_key = RSAAlgorithm.from_jwk(key)
+
+            # Decode & verify token
             decoded = jwt.decode(
                 token,
                 public_key,
@@ -1198,38 +1289,42 @@ class AppleSignInView(APIView):
                 audience=settings.APPLE_BUNDLE_ID,
                 issuer='https://appleid.apple.com'
             )
-
-            # Get user info from the token
-            email = decoded.get('email')
+            # Extract user info
             apple_id = decoded['sub']
+            email = decoded.get('email')
 
-            # Try to find existing user
-            try:
-                user = CustomUser.objects.get(email=email)
-                # Update Apple ID if not set
-                if not user.apple_id:
-                    user.apple_id = apple_id
-                    user.save()
-            except CustomUser.DoesNotExist:
-                # Create new user
-                username = email.split('@')[0]
-                # Ensure username is unique
-                base_username = username
-                counter = 1
-                while CustomUser.objects.filter(username=username).exists():
-                    username = f"{base_username}{counter}"
-                    counter += 1
+            # Find or create user
+            user = None
+            if email:
+                try:
+                    user = CustomUser.objects.get(email=email)
+                    if not user.apple_id:
+                        user.apple_id = apple_id
+                        user.save()
+                except CustomUser.DoesNotExist:
+                    username = email.split('@')[0]
+                    base_username = username
+                    counter = 1
+                    while CustomUser.objects.filter(username=username).exists():
+                        username = f"{base_username}{counter}"
+                        counter += 1
 
-                user = CustomUser.objects.create(
-                    email=email,
-                    username=username,
+                    user = CustomUser.objects.create(
+                        email=email,
+                        username=username,
+                        apple_id=apple_id,
+                        is_email_verified=True
+                    )
+            else:
+                # Fallback: find/create by apple_id
+                user, _ = CustomUser.objects.get_or_create(
                     apple_id=apple_id,
-                    is_email_verified=True  # Email is verified by Apple
+                    defaults={"username": f"user_{apple_id[:8]}"}  # random username if email missing
                 )
 
             # Generate tokens
             refresh = RefreshToken.for_user(user)
-            
+
             return standard_response(
                 data={
                     'access': str(refresh.access_token),
@@ -1249,6 +1344,8 @@ class AppleSignInView(APIView):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 error=[f'An error occurred: {str(e)}']
             )
+
+
 
 class IdTypeViewSet(StandardResponseViewSet):
     """

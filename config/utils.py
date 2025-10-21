@@ -2,6 +2,7 @@ from rest_framework.response import Response
 import cloudinary
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
+from django.conf import settings
 
 def standard_response(data=None, status_code=200, error=None):
     """
@@ -23,8 +24,6 @@ def standard_response(data=None, status_code=200, error=None):
     }
     
     return Response(response_data, status=status_code) 
-
-from django.conf import settings
 
 
 CLOUDINARY_CLOUD_NAME = settings.CLOUDINARY_CLOUD_NAME
