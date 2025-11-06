@@ -49,15 +49,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         'is_typing': text_data_json.get('is_typing', False)
                     }
                 )
-            # elif message_type == 'message':
-            #     # Send message to room group
-            #     await self.channel_layer.group_send(
-            #         self.room_group_name,
-            #         {
-            #             'type': 'chat_message',
-            #             'message': text_data_json
-            #         }
-            #     )
+            elif message_type == 'message':
+                # Send message to room group
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'chat_message',
+                        'message': text_data_json
+                    }
+                )
 
         except Exception as e:
             import traceback
