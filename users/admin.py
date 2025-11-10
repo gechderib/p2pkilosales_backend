@@ -7,8 +7,8 @@ class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
     verbose_name_plural = 'Profile'
-    fields = ('profile_picture_url', 'contact_info', 'languages', 'travel_history', 
-              'preferences', 'front_side_identity_card_url', 'back_side_identity_card_url', 'selfie_photo_url', 
+    fields = ('profile_picture_url',  
+              'front_side_identity_card_url', 'back_side_identity_card_url', 'selfie_photo_url', 
               'address', )
     readonly_fields = ('created_at', 'updated_at')
 
@@ -24,7 +24,7 @@ class CustomUserAdmin(UserAdmin):
     
     fieldsets = (
         (None, {'fields': ('email', 'username', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number', 'google_id','apple_id')}),
         ('Verification Status', {'fields': ('is_email_verified', 'is_phone_verified', 
                                           'is_identity_verified', 'is_profile_completed')}),
         ('Privacy Policy', {'fields': ('privacy_policy_accepted', 'date_privacy_accepted')}),
@@ -75,23 +75,23 @@ class CustomUserAdmin(UserAdmin):
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'user', 'profile_picture_url', 'contact_info', 'languages', 'travel_history',
-        'preferences', 'selfie_photo_url', 'address', 'city_of_residence', 'id_type',
+        'id', 'user', 'profile_picture_url', 
+        'selfie_photo_url', 'address', 'city_of_residence', 'id_type',
         'issue_country', 'front_side_identity_card_url', 'back_side_identity_card_url',
         # 'created_at', 'updated_at'
     )
     list_filter = ('created_at', 'updated_at')
-    search_fields = ('user__email', 'user__username', 'contact_info', 'address')
+    search_fields = ('user__email', 'user__username', 'address')
     readonly_fields = (
-    #     'user', 'profile_picture_url', 'contact_info', 'languages', 'travel_history',
-    #     'preferences', 'selfie_photo_url', 'address', 'city_of_residence', 'id_type',
+    #     'user', 'profile_picture_url', 
+    #     'selfie_photo_url', 'address', 'city_of_residence', 'id_type',
     #     'issue_country', 'front_side_identity_card_url', 'back_side_identity_card_url',
         'created_at', 'updated_at'
     )
     fieldsets = (
         ('User Information', {'fields': ('user',)}),
-        ('Contact Information', {'fields': ('contact_info', 'address')}),
-        ('Profile Details', {'fields': ('profile_picture_url', 'languages', 'travel_history', 'preferences')}),
+        ('Contact Information', {'fields': ('address',)}),
+        ('Profile Details', {'fields': ('profile_picture_url', )}),
         ('Location & ID', {'fields': ('city_of_residence', 'id_type', 'issue_country')}),
         ('Verification Documents', {'fields': ('front_side_identity_card_url', 'back_side_identity_card_url', 'selfie_photo_url')}),
         ('Timestamps', {'fields': ('created_at', 'updated_at')}),

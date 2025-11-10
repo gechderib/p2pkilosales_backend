@@ -48,7 +48,6 @@ class Migration(migrations.Migration):
                 ('apple_id', models.CharField(blank=True, max_length=255, null=True, unique=True)),
                 ('is_identity_verified', models.BooleanField(default=False)),
                 ('is_profile_completed', models.BooleanField(default=False)),
-                ('is_facebook_verified', models.BooleanField(default=False)),
                 ('privacy_policy_accepted', models.BooleanField(default=False)),
                 ('date_privacy_accepted', models.DateTimeField(blank=True, null=True)),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),

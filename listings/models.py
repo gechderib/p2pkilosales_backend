@@ -46,6 +46,7 @@ class TravelListing(models.Model):
 
     def __str__(self):
         return f"{self.pickup_country.name} to {self.destination_country.name} - {self.travel_date}"
+    
 
 class PackageType(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -58,10 +59,10 @@ class PackageType(models.Model):
 
 class PackageRequest(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('accepted', 'Accepted'),
-        ('rejected', 'Rejected'),
-        ('completed', 'Completed'),
+        ('pending', 'Pending'), # by user who created the package request
+        ('accepted', 'Accepted'), # accepted by owner of the travel_listing
+        ('rejected', 'Rejected'), # rejected by owner of the travel_listing
+        ('completed', 'Completed'), # completed by the one who created the package request
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

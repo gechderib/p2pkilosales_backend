@@ -17,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'phone_number', 'first_name', 'last_name', 'is_active', 'date_joined', 'profile']
         read_only_fields = ['id', 'date_joined']
+    
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -54,6 +55,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.set_unusable_password()
         user.save()
         return user
+    
 
 class IdTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -72,6 +74,12 @@ class ProfileSerializer(serializers.ModelSerializer):
     front_side_identity_card = serializers.ImageField(write_only=True, required=False)
     back_side_identity_card = serializers.ImageField(write_only=True, required=False)
     selfie_photo = serializers.ImageField(write_only=True, required=False)
+    # full_name is the combination of first_name and last_name from User model
+    full_name = serializers.SerializerMethodField()
+
+    def get_full_name(self, obj):
+        return f"{obj.user.first_name} {obj.user.last_name}".strip()
+    
 
     class Meta:
         model = Profile
@@ -81,7 +89,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             'gender',
             'date_of_birth',
             'nationality',
-            'country_of_residence',
             'kyc_method',
             'two_factor_enabled',
             'device_fingerprint',
@@ -99,11 +106,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'preferred_payment_method',
             'notification_setting',
             'profile_picture',
-            'profile_picture_url',
-            'contact_info', 
-            'languages', 
-            'travel_history', 
-            'preferences', 
+            'profile_picture_url', 
             'selfie_photo_url', 
             'selfie_photo', 
             'address',
@@ -120,7 +123,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'created_at', 
             'updated_at'
         )
-        read_only_fields = ('created_at', 'updated_at', 'city_of_residence', 'id_type', 'issue_country')
+        read_only_fields = ('created_at', 'updated_at', 'city_of_residence', 'id_type', 'issue_country', 'full_name')
     
     def create(self, validated_data):
         profile_picture = validated_data.pop('profile_picture', None)
@@ -175,9 +178,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'email', 'username', 'first_name', 'last_name', 'phone_number',
                  'is_email_verified', 'is_phone_verified', 'is_identity_verified',
-                 'is_profile_completed', 'is_facebook_verified', 'profile', 'verification_status')
+                 'is_profile_completed', 'profile', 'verification_status')
         read_only_fields = ('id', 'email', 'is_email_verified', 'is_phone_verified',
-                          'is_identity_verified', 'is_profile_completed', 'is_facebook_verified')
+                          'is_identity_verified', 'is_profile_completed')
 
     def get_verification_status(self, obj):
         return {
@@ -185,7 +188,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'phone_verified': obj.is_phone_verified,
             'identity_verified': obj.is_identity_verified,
             'profile_completed': obj.is_profile_completed,
-            'facebook_verified': obj.is_facebook_verified
         }
 
     def update(self, instance, validated_data):

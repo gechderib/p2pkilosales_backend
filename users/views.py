@@ -15,7 +15,7 @@ from .serializers import (
     UserSerializer, OTPVerificationSerializer, ResendOTPSerializer, ForgotPasswordSerializer,
     ResetPasswordSerializer, SetPasswordSerializer, TelegramUserRegistrationSerializer, IdTypeSerializer
 )
-from .utils import send_verification_email
+from .tasks import send_verification_email_task
 import random
 import string
 from config.views import StandardResponseViewSet
@@ -205,7 +205,7 @@ class UserViewSet(StandardResponseViewSet):
             otp = ''.join(random.choices(string.digits, k=6))
             OTP.objects.create(user=user, code=otp, purpose='email_verification')
             try:
-                send_verification_email(user, otp)
+                send_verification_email_task.delay(user.id, otp)
                 return standard_response(
                     data={
                         'message': 'Registration successful. Please check your email for verification code.',
@@ -296,10 +296,10 @@ class UserViewSet(StandardResponseViewSet):
         # Send OTP via email
         try:
             if purpose == 'email_verification':
-                send_verification_email(user, otp)
+                send_verification_email_task.delay(user.id, otp)
             elif purpose == 'password_reset':
                 # You can create a different email template for password reset
-                send_verification_email(user, otp)
+                send_verification_email_task.delay(user.id, otp)
             
             return standard_response(
                 data={'message': 'OTP sent successfully'},
@@ -339,7 +339,8 @@ class UserViewSet(StandardResponseViewSet):
 
                 # Send OTP via email
                 try:
-                    send_verification_email(user, otp)
+                    send_verification_email_task.delay(user.id, otp)
+
                     return standard_response(
                         data={
                             'message': 'Password reset OTP sent successfully to your email',
@@ -554,10 +555,6 @@ class UserViewSet(StandardResponseViewSet):
         )
     
     
-    ##################################################
-    ##################################################            
-    # endpoint to send otp code to email or phone number and validate it
-    # extra action to validate that the opt send from the frontend is exist and not used
     @action(detail=False, methods=['post'])
     def validate_otp(self, request):
         user_id = request.data.get('user_id')
@@ -634,8 +631,7 @@ class UserViewSet(StandardResponseViewSet):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 error=['Invalid verification method. Use "email" or "phone"']
             )
-    ##################################################
-    ##################################################
+
     @action(detail=False, methods=['post'])
     def send_phone_otp(self, request):
         user = request.user
@@ -1170,88 +1166,6 @@ class GoogleSignInView(APIView):
                 error=[f'An error occurred: {str(e)}']
             )
 
-# class AppleSignInView(APIView):
-#     permission_classes = [AllowAny]
-
-#     def post(self, request):
-#         token = request.data.get('token')
-#         if not token:
-#             return standard_response(
-#                 status_code=status.HTTP_400_BAD_REQUEST,
-#                 error=['Apple token is required']
-#             )
-
-#         try:
-#             # Verify the token
-#             headers = {
-#                 'kid': settings.APPLE_KEY_ID
-#             }
-            
-#             # Get Apple's public key
-#             response = requests.get(settings.APPLE_PUBLIC_KEY_URL)
-#             public_key = response.json()
-
-#             # Verify the token
-#             decoded = jwt.decode(
-#                 token,
-#                 public_key,
-#                 algorithms=['RS256'],
-#                 audience=settings.APPLE_BUNDLE_ID,
-#                 issuer='https://appleid.apple.com'
-#             )
-
-#             # Get user info from the token
-#             email = decoded.get('email')
-#             apple_id = decoded['sub']
-
-#             # Try to find existing user
-#             try:
-#                 user = CustomUser.objects.get(email=email)
-#                 # Update Apple ID if not set
-#                 if not user.apple_id:
-#                     user.apple_id = apple_id
-#                     user.save()
-#             except CustomUser.DoesNotExist:
-#                 # Create new user
-#                 username = email.split('@')[0]
-#                 # Ensure username is unique
-#                 base_username = username
-#                 counter = 1
-#                 while CustomUser.objects.filter(username=username).exists():
-#                     username = f"{base_username}{counter}"
-#                     counter += 1
-
-#                 user = CustomUser.objects.create(
-#                     email=email,
-#                     username=username,
-#                     apple_id=apple_id,
-#                     is_email_verified=True  # Email is verified by Apple
-#                 )
-
-#             # Generate tokens
-#             refresh = RefreshToken.for_user(user)
-            
-#             return standard_response(
-#                 data={
-#                     'access': str(refresh.access_token),
-#                     'refresh': str(refresh),
-#                     'user': UserSerializer(user).data
-#                 },
-#                 status_code=status.HTTP_200_OK
-#             )
-
-#         except jwt.InvalidTokenError as e:
-#             return standard_response(
-#                 status_code=status.HTTP_400_BAD_REQUEST,
-#                 error=[f'Invalid token: {str(e)}']
-#             )
-#         except Exception as e:
-#             return standard_response(
-#                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#                 error=[f'An error occurred: {str(e)}']
-#             )
-
-
 class AppleSignInView(APIView):
     permission_classes = [AllowAny]
 
@@ -1345,8 +1259,6 @@ class AppleSignInView(APIView):
                 error=[f'An error occurred: {str(e)}']
             )
 
-
-
 class IdTypeViewSet(StandardResponseViewSet):
     """
     API endpoint for ID types
@@ -1362,3 +1274,23 @@ class IdTypeViewSet(StandardResponseViewSet):
 
     def perform_create(self, serializer):
         serializer.save()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        

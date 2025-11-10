@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 import dj_database_url
 import firebase_admin
 from firebase_admin import credentials
-
+from celery.schedules import crontab
 load_dotenv()
 
 # Replace the DATABASES section of your settings.py with this
@@ -58,6 +58,9 @@ INSTALLED_APPS = [
     'messaging',
     'reporting',
     'rest_framework_simplejwt.token_blacklist',
+    'django_celery_beat',
+    'django_celery_results',
+
 ]
 SITE_ID = 1
 
@@ -228,6 +231,26 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+# Celery Configuration
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BEAT_SCHEDULE = {
+    'send-daily-report': {
+        'task': 'users.tasks.send_report',  # full path to the task
+        # 'schedule': crontab(hour=8, minute=0),  # every day at 08:00
+        # 'schedule': crontab(minute='*/15')      # every 15 minutes
+        # 
+        'schedule': 60,
+        'args': (),  # any arguments for the task
+    },
+}
+
+CELERY_TIMEZONE = 'Africa/Addis_Ababa'
+print("celery broker url: ", CELERY_BROKER_URL)
 
 # Google OAuth2 settings
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')

@@ -42,6 +42,7 @@ class IdType(models.Model):
     def __str__(self):
         return self.name
 IDENTITY_VERIFICATION_CHOICES = [
+    ('idle', 'Idle'),
     ('pending', 'Pending'),
     ('rejected', 'Rejected'),
     ('completed', 'Completed'),
@@ -57,13 +58,13 @@ class CustomUser(BaseUser):
     is_identity_verified = models.CharField(
         max_length=10,
         choices=IDENTITY_VERIFICATION_CHOICES,
-        default='pending',
-    )
+        default='idle',
+    )    
     is_profile_completed = models.BooleanField(default=False)
-    is_facebook_verified = models.BooleanField(default=False)
     privacy_policy_accepted = models.BooleanField(default=False)
     date_privacy_accepted = models.DateTimeField(null=True, blank=True)
     objects = CustomUserManager()
+    # is_facebook_verified = models.BooleanField(null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'phone_number']
@@ -75,17 +76,14 @@ class CustomUser(BaseUser):
         # for is profile completed check is is_phone_verified, is_email_verified, and is_identity_verified
         self.is_profile_completed = (
             self.is_phone_verified and
-            self.is_email_verified and
+            self.is_email_verified and self.privacy_policy_accepted and
             self.is_identity_verified == 'completed'
         )
+        
         super().save(*args, **kwargs)
 
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile')
-    contact_info = models.CharField(max_length=255, blank=True)
-    languages = models.CharField(max_length=255, blank=True)
-    travel_history = models.TextField(blank=True)
-    preferences = models.TextField(blank=True)
     address = models.TextField(blank=True, null=True)
     city_of_residence = models.ForeignKey("listings.Region", on_delete=models.SET_NULL, null=True, blank=True, related_name='residents')
     id_type = models.ForeignKey(IdType, on_delete=models.SET_NULL, null=True, blank=True)
@@ -96,11 +94,15 @@ class Profile(models.Model):
     back_side_identity_card_url = models.CharField(max_length=255, blank=True, null=True)
     selfie_photo_url = models.CharField(max_length=255, blank=True, null=True)
 
-    full_name = models.CharField(max_length=255, blank=True)
-    gender = models.CharField(max_length=20, blank=True)
+    gender = models.CharField(
+        max_length=20, 
+        choices=[ ('male', 'Male'), ('female', 'Female'), ('other', 'Other')], 
+        blank=True,
+        null=True
+    )
+    
     date_of_birth = models.DateField(null=True, blank=True)
     nationality = models.CharField(max_length=255, blank=True)
-    country_of_residence = models.CharField(max_length=255, blank=True)
     kyc_method = models.CharField(max_length=255, blank=True)
     two_factor_enabled = models.BooleanField(default=False)
     device_fingerprint = models.CharField(max_length=255, blank=True)
@@ -116,11 +118,27 @@ class Profile(models.Model):
     total_completed_deliveries = models.IntegerField(default=0)
     average_rating = models.FloatField(default=0)
     total_rating_received = models.IntegerField(default=0)
-    preferred_payment_method = models.CharField(max_length=255, blank=True)
+    preferred_payment_method = models.CharField(
+        max_length=255, 
+        choices=[ ('bank_transfer', 'Bank Transfer'),('telebirr', 'Tele Birr'),('cash', "Cash"), ('system_coin', 'System Coin'), ('others', 'Others')], 
+        blank=True
+    )
     notification_setting = models.JSONField(default=dict)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            previous = Profile.objects.get(pk=self.pk)
+            if (previous.front_side_identity_card_url != self.front_side_identity_card_url or
+                previous.back_side_identity_card_url != self.back_side_identity_card_url or
+                previous.selfie_photo_url != self.selfie_photo_url):
+                if (self.front_side_identity_card_url and 
+                    self.back_side_identity_card_url and self.selfie_photo_url):
+                    self.user.is_identity_verified = 'pending'
+                    self.user.save()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.get_full_name()}'s Profile"
