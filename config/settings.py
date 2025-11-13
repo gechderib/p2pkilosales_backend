@@ -244,7 +244,7 @@ CELERY_BEAT_SCHEDULE = {
         # 'schedule': crontab(hour=8, minute=0),  # every day at 08:00
         # 'schedule': crontab(minute='*/15')      # every 15 minutes
         # 
-        'schedule': 60,
+        'schedule': 60000000,
         'args': (),  # any arguments for the task
     },
 }

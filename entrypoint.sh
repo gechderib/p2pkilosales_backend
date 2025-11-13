@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Wait for Postgres
+# # Wait for Postgres
 # echo "Waiting for database..."
 # while ! nc -z db 5432; do
 #   echo "Postgres is unavailable - sleeping"
@@ -11,7 +11,6 @@
 # Run migrations
 echo "Running migrations..."
 python manage.py makemigrations
-python manage.py makemigrations users
 python manage.py migrate
 
 # Create superuser
@@ -21,6 +20,10 @@ python manage.py createsuperuser --noinput --username admin --email admin@exampl
 # Collect static files
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --clear
+
+# Start Celery worker and beat in the background
+echo "Starting Celery worker and beat..."
+celery -A config worker -B -l info &
 
 # Start Daphne
 echo "Starting Daphne ..."

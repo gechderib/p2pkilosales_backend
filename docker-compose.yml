@@ -1,19 +1,19 @@
 services:
-  db:
-    image: postgres:14
-    environment:
-      POSTGRES_DB: p2pkilosales
-      POSTGRES_USER: p2pkilosales
-      POSTGRES_PASSWORD: p2pkilosales
-    ports:
-      - "5431:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+  # db:
+  #   image: postgres:14
+  #   environment:
+  #     POSTGRES_DB: p2pkilosales
+  #     POSTGRES_USER: p2pkilosales
+  #     POSTGRES_PASSWORD: p2pkilosales
+  #   ports:
+  #     - "5431:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
 
-  redis:
-    image: redis:7
-    ports:
-      - "6380:6379"
+  # redis:
+  #   image: redis:7
+  #   ports:
+  #     - "6380:6379"
 
   web:
     build: .
@@ -29,36 +29,27 @@ services:
     # command: uvicorn config.asgi:application --host 0.0.0.0 --port 8000 --reload
     # command: daphne -b 0.0.0.0 -p 8000 config.asgi:application
 
-  celery:
-    build: .
-    command: celery -A config worker -l info
-    depends_on:
-      - redis
-      - web
-    volumes:
-      - .:/app
-    env_file:
-      - .env
+  # celery:
+  #   build: .
+  #   command: celery -A config worker -l info
+  #   depends_on:
+  #     - redis
+  #     - web
+  #   volumes:
+  #     - .:/app
+  #   env_file:
+  #     - .env
 
-  celery-beat:
-    build: .
-    command: celery -A config beat -l info
-    depends_on:
-      - redis
-      - web
-    volumes:
-      - .:/app
-    env_file:
-      - .env
-
-  flower:
-    build: .
-    command: celery -A config flower --port=5555 --broker=redis://redis:6379/0
-    ports:
-      - "5555:5555"   # host:container
-    depends_on:
-      - redis
-
+  # celery-beat:
+  #   build: .
+  #   command: celery -A config beat -l info
+  #   depends_on:
+  #     - redis
+  #     - web
+  #   volumes:
+  #     - .:/app
+  #   env_file:
+  #     - .env
 
 volumes:
   postgres_data:
