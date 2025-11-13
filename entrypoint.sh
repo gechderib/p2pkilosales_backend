@@ -21,10 +21,6 @@ python manage.py createsuperuser --noinput --username admin --email admin@exampl
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --clear
 
-# # Start Celery worker and beat in the background
-# echo "Starting Celery worker and beat..."
-# celery -A config worker -B -l info &
-
 # Start Daphne
 echo "Starting Daphne ..."
 exec daphne -b 0.0.0.0 -p 8000 config.asgi:application

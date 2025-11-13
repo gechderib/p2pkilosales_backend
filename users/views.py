@@ -31,6 +31,7 @@ from google.auth.transport import requests as google_requests
 import jwt
 from datetime import datetime
 from jwt.algorithms import RSAAlgorithm
+from .utils import send_verification_email
 
 User = get_user_model()
 
@@ -205,7 +206,8 @@ class UserViewSet(StandardResponseViewSet):
             otp = ''.join(random.choices(string.digits, k=6))
             OTP.objects.create(user=user, code=otp, purpose='email_verification')
             try:
-                send_verification_email_task.delay(user.id, otp)
+                # send_verification_email_task.delay(user.id, otp)
+                send_verification_email(user, otp)
                 return standard_response(
                     data={
                         'message': 'Registration successful. Please check your email for verification code.',
