@@ -1,12 +1,12 @@
 #!/bin/sh
 
 # Wait for Postgres
-echo "Waiting for database..."
-while ! nc -z db 5432; do
-  echo "Postgres is unavailable - sleeping"
-  sleep 1
-done
-echo "Postgres is up - continuing"
+# echo "Waiting for database..."
+# while ! nc -z db 5432; do
+#   echo "Postgres is unavailable - sleeping"
+#   sleep 1
+# done
+# echo "Postgres is up - continuing"
 
 # Run migrations
 echo "Running migrations..."
