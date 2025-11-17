@@ -31,7 +31,7 @@ class Conversation(models.Model):
 class Message(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='sent_messages')
-    content = models.TextField()
+    content = models.TextField(null=True, blank=True)
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -44,7 +44,6 @@ class Message(models.Model):
 
 class MessageAttachment(models.Model):
     message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='attachments')
-    # file = models.FileField(upload_to='message_attachments/')
     file_url = models.CharField(max_length=255, blank=True, null=True)
     file_name = models.CharField(max_length=255)
     file_type = models.CharField(max_length=50)

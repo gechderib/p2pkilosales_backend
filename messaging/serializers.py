@@ -55,7 +55,15 @@ class MessageSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         uploaded_files = validated_data.pop('uploaded_files', [])
-        message = Message.objects.create(**validated_data)
+        content = validated_data.pop('content', '')
+
+        # if their is no uploaded_files the content is requed field
+        if len(uploaded_files) == 0 and not content:
+            raise serializers.ValidationError(
+                "content is requered if you didn't provide a file"
+            )
+
+        message = Message.objects.create(**validated_data)            
         
         # Handle file attachments
         for file in uploaded_files:
@@ -72,6 +80,7 @@ class MessageSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         uploaded_files = validated_data.pop('uploaded_files', [])
+
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Wait for Postgres
+# # Wait for Postgres
 # echo "Waiting for database..."
 # while ! nc -z db 5432; do
 #   echo "Postgres is unavailable - sleeping"

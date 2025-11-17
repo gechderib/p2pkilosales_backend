@@ -620,6 +620,25 @@ class AlertViewSet(StandardResponseViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def perform_update(self, serializer):
+        alert = self.get_object()
+        if alert.user != self.request.user:
+            return self._standardize_response(
+                Response(
+                    {"detail": "You do not have permission to update this alert."},
+                    status=403
+                )
+            )    
+        return super().perform_update(serializer)
+    
+    def perform_destroy(self, instance):
+        if instance.user != self.request.user:
+            return self._standardize_response(
+                Response({"detail": "You do not have permission to delete this alert."}),
+                status=403
+            )
+        return super().perform_destroy(instance)
+    
     @action(detail=False, methods=['get'])
     def my_alerts(self, request):
         """
