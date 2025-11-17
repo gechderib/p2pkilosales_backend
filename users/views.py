@@ -206,8 +206,8 @@ class UserViewSet(StandardResponseViewSet):
             otp = ''.join(random.choices(string.digits, k=6))
             OTP.objects.create(user=user, code=otp, purpose='email_verification')
             try:
-                send_verification_email_task.delay(user.id, otp)
-                # send_verification_email(user, otp)
+                # send_verification_email_task.delay(user.id, otp)
+                send_verification_email(user, otp)
 
                 return standard_response(
                     data={
@@ -299,11 +299,14 @@ class UserViewSet(StandardResponseViewSet):
         # Send OTP via email
         try:
             if purpose == 'email_verification':
-                send_verification_email_task.delay(user.id, otp)
+                # send_verification_email_task.delay(user.id, otp)
+                send_verification_email(user, otp)
+
             elif purpose == 'password_reset':
                 # You can create a different email template for password reset
-                send_verification_email_task.delay(user.id, otp)
-            
+                # send_verification_email_task.delay(user.id, otp)
+                send_verification_email(user, otp)
+
             return standard_response(
                 data={'message': 'OTP sent successfully'},
                 status_code=status.HTTP_200_OK
@@ -342,7 +345,8 @@ class UserViewSet(StandardResponseViewSet):
 
                 # Send OTP via email
                 try:
-                    send_verification_email_task.delay(user.id, otp)
+                    # send_verification_email_task.delay(user.id, otp)
+                    send_verification_email(user, otp)
 
                     return standard_response(
                         data={
