@@ -55,9 +55,9 @@ class MessageSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         uploaded_files = validated_data.pop('uploaded_files', [])
-        content = validated_data.pop('content', '')
+        content = validated_data.get('content', '')
 
-        # if their is no uploaded_files the content is requed field
+        # if their is no uploaded_files the content is requred field
         if len(uploaded_files) == 0 and not content:
             raise serializers.ValidationError(
                 "content is requered if you didn't provide a file"
