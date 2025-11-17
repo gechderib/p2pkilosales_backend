@@ -28,5 +28,5 @@ render.yaml
 adrash-firebase.json
 celerybeat-schedule
 client_secret_415314508051-5nu9ejr2kgkbppmqjcu1a59akottql72.apps.googleusercontent.com.json
-token.pickle
-generate_token.py
+token.json
+get_gmail_token.py

@@ -208,6 +208,7 @@ class UserViewSet(StandardResponseViewSet):
             try:
                 # send_verification_email_task.delay(user.id, otp)
                 send_verification_email(user, otp)
+
                 return standard_response(
                     data={
                         'message': 'Registration successful. Please check your email for verification code.',

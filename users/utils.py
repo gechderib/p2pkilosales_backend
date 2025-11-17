@@ -39,65 +39,50 @@
 #         print(f"Failed to send verification email to {user.email}: {str(e)}")
 #         raise 
 
-
-
-import base64
-from email.mime.text import MIMEText
-from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
+from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-import os
+from django.conf import settings
 
+import logging
 
-TOKEN_PATH = os.path.join(os.path.dirname(__file__), 'token.pickle')
+from .gmail_utils import send_message 
+User = get_user_model()
+
+logger = logging.getLogger(__name__)
 
 def send_verification_email(user, otp_code):
     """
-    Send verification email using Gmail API
+    Send verification email with OTP code using Gmail API
     """
-
-    # user = 
     subject = 'Verify Your Email - P2P Kilosales'
-
-    # Render HTML
-    html_message = render_to_string('email_verification.html', {
-        'user': user,
-        'otp_code': otp_code
-    })
-
-    # Plain text version
-    plain_message = strip_tags(html_message)
-
+    
     try:
-        print(f"Attempting to send verification email to {user.email}")
-
-        # Load token.pickle
-        creds = Credentials.from_authorized_user_file(
-            TOKEN_PATH,
-            ['https://www.googleapis.com/auth/gmail.send']
+        # Render the HTML template
+        html_message = render_to_string('email_verification.html', {
+            'user': user,
+            'otp_code': otp_code
+        })
+        
+        # Plain text fallback
+        plain_message = strip_tags(html_message)
+        
+        print(f"\nAttempting to send verification email to {user.email}")
+        print(f"Email content: {plain_message}")
+        
+        # Send via Gmail API
+        # The sender must match the authorized Gmail account used in token.json
+        sender_email = settings.EMAIL_HOST_USER
+        send_message(
+            sender=sender_email,
+            to=user.email,
+            subject=subject,
+            plain_text=plain_message,
+            html_text=html_message
         )
-
-        # Gmail service
-        service = build('gmail', 'v1', credentials=creds)
-
-        # Create MIME email
-        message = MIMEText(html_message, 'html')
-        message['to'] = user.email
-        message['from'] = "gechderib@gmail.com"   # your Gmail
-        message['subject'] = subject
-
-        # Encode email
-        raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-
-        # Send email
-        service.users().messages().send(
-            userId="me",
-            body={'raw': raw_message}
-        ).execute()
-
+        
         print(f"Verification email sent successfully to {user.email}")
-
     except Exception as e:
-        print(f"Failed to send verification email to {user.email}: {e}")
+        print(f"Failed to send verification email to {user.email}: {str(e)}")
         raise
+
