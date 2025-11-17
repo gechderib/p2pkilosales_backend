@@ -206,8 +206,8 @@ class UserViewSet(StandardResponseViewSet):
             otp = ''.join(random.choices(string.digits, k=6))
             OTP.objects.create(user=user, code=otp, purpose='email_verification')
             try:
-                # send_verification_email_task.delay(user.id, otp)
-                send_verification_email(user, otp)
+                send_verification_email_task.delay(user.id, otp)
+                # send_verification_email(user, otp)
 
                 return standard_response(
                     data={
