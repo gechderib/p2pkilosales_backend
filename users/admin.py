@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Profile, OTP, IdType
+from .models import CustomUser, Profile, OTP, IdType, TravelPriceSetting
 from messaging.utils import send_notification_to_user
 
 class ProfileInline(admin.StackedInline):
@@ -116,3 +116,10 @@ class IdTypeAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at')
 
 admin.site.register(CustomUser, CustomUserAdmin)
+
+
+@admin.register(TravelPriceSetting)
+class TravelPriceSettingAdmin(admin.ModelAdmin):
+    list_display = ('price_per_kg', 'price_per_document', 'price_per_phone', 'price_per_tablet', 'price_per_pc', 'price_per_file', 'price_full_suitcase')
+    search_fields = ('price_per_kg', 'price_per_document')
+    readonly_fields = ('created_at', 'updated_at')

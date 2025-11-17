@@ -169,3 +169,17 @@ class OTP(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class TravelPriceSetting(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="price_setting", unique=True)
+    price_per_kg = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_document = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_phone = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    price_per_tablet = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    price_per_pc = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    price_per_file = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    price_full_suitcase = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

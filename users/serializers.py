@@ -4,7 +4,7 @@ from .models import Profile, OTP
 from django.utils import timezone
 from listings.models import Region, Country
 from listings.serializers import RegionSerializer, CountrySerializer
-from .models import IdType
+from .models import IdType, TravelPriceSetting
 from django.conf import settings
 from config.utils import upload_image, delete_image, optimized_image_url, auto_crop_url
 User = get_user_model()
@@ -373,3 +373,23 @@ class TelegramUserRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user 
+
+
+class TravelPriceSettingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TravelPriceSetting
+        fields = ('user', 'price_per_kg', 'price_per_document', 'price_per_phone', 'price_per_tablet', 'price_per_pc', 'price_per_file', 'price_full_suitcase', 'created_at', 'updated_at')
+
+class TravelPriceSettingMutationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TravelPriceSetting
+        fields = ('price_per_kg', 'price_per_document', 'price_per_phone', 'price_per_tablet', 'price_per_pc', 'price_per_file', 'price_full_suitcase')
+    
+    def validate(self, attrs):
+        for key, value in attrs.items():
+            print(f'the key value is -> {key}:{value}')
+            if value <= 0:
+                raise serializers.ValidationError({key: "Value has to be greater than 0"})
+        return super().validate(attrs)
+

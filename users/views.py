@@ -8,12 +8,12 @@ from rest_framework.exceptions import PermissionDenied
 from django.contrib.auth import get_user_model, authenticate
 from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Profile, OTP, CustomUser, IdType
+from .models import Profile, OTP, CustomUser, IdType, TravelPriceSetting
 from .serializers import (
     UserRegistrationSerializer, UserProfileSerializer, ProfileSerializer,
     OTPSerializer, PasswordChangeSerializer, PrivacyPolicyAcceptanceSerializer,
     UserSerializer, OTPVerificationSerializer, ResendOTPSerializer, ForgotPasswordSerializer,
-    ResetPasswordSerializer, SetPasswordSerializer, TelegramUserRegistrationSerializer, IdTypeSerializer
+    ResetPasswordSerializer, SetPasswordSerializer, TelegramUserRegistrationSerializer, IdTypeSerializer, TravelPriceSettingSerializer, TravelPriceSettingMutationSerializer
 )
 from .tasks import send_verification_email_task
 import random
@@ -1285,19 +1285,25 @@ class IdTypeViewSet(StandardResponseViewSet):
 
 
 
+class TravelPriceSettingViewSet(StandardResponseViewSet):
 
+    queryset = TravelPriceSetting.objects.all()
+    serializer_class = TravelPriceSettingSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            print(self.action)
+            return TravelPriceSettingMutationSerializer
+        return super().get_serializer_class()
 
+    def get_object(self):
+        obj = super().get_object()
+        if obj.user != self.request.user:
+            raise PermissionDenied("You can only access your own TravelPriceSetting")
+        return obj
 
-
-
-
-
-
-
-
-
-
-
-
-        
+    def perform_create(self, serializer):
+        if TravelPriceSetting.objects.filter(user=self.request.user).exists():
+            raise PermissionDenied("You can only create one TravelPriceSetting")
+        serializer.save(user=self.request.user)
