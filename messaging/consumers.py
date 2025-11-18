@@ -9,9 +9,14 @@ User = get_user_model()
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        self.user = self.scope['user']
+        if not self.user.is_authenticated:
+            await self.close()
+            return
+        
         self.conversation_id = self.scope['url_route']['kwargs']['conversation_id']
         self.room_group_name = f'chat_{self.conversation_id}'
-        print("Connected now 11111111111111111111111111")
+        print("******************* Websocket Connected Successfully **********************")
         # Join room group
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -22,7 +27,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         # Leave room group
-        print("Disconnected now 222222222222222222222222222")
+        print("******************* Websocket Disconnected ***********************")
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
@@ -32,19 +37,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             text_data_json = json.loads(text_data)
             message_type = text_data_json.get('type')
-            print(message_type)
-            if message_type == 'message':
-                content = text_data_json.get('content')
-                attachments = text_data_json.get('attachments', [])
 
-                # Save message to database and get serializable dict
-                message_data = await self.save_message(content, attachments)
+            if message_type == 'message':
                 # Send message to room group
                 await self.channel_layer.group_send(
                     self.room_group_name,
                     {
                         'type': 'chat_message',
-                        'message': message_data
+                        'message': text_data_json
                     }
                 )
             elif message_type == 'typing':
@@ -58,6 +58,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         'is_typing': text_data_json.get('is_typing', False)
                     }
                 )
+
         except Exception as e:
             import traceback
             print("Exception in receive:", e)
@@ -85,63 +86,63 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'is_typing': event['is_typing']
         }))
 
-    @database_sync_to_async
-    def save_message(self, content, attachments):
-        # Import models here to avoid circular imports
-        from .models import Conversation, Message, MessageAttachment
+    # @database_sync_to_async
+    # def save_message(self, content, attachments):
+    #     # Import models here to avoid circular imports
+    #     from .models import Conversation, Message, MessageAttachment
         
-        conversation = Conversation.objects.get(id=self.conversation_id)
-        message = Message.objects.create(
-            conversation=conversation,
-            sender=self.scope['user'],
-            content=content
-        )
-        print("========================================")
-        print(attachments)
-        print("========================================")
-        # Handle attachments
-        for attachment in attachments:
-            file_data = base64.b64decode(attachment['data'])
-            file_name = attachment['name']
-            file_type = attachment['type']
-            print("+++++++++++++++++++++++++++++++++++++")
-            print(file_data)
-            print(file_name)
-            print(file_type)
-            print("++++++++++++++++++++++++++++++++++++++")
-            file_url = upload_image(file_data, public_id=f'message_attachments/{message.id}/{file_name}')
-            print("File URL after upload:", file_url)
-            MessageAttachment.objects.create(
-                message=message,
-                # file=ContentFile(file_data, name=file_name),
-                file_url=file_url,
-                file_name=file_name,
-                file_type=file_type
-            )
+    #     conversation = Conversation.objects.get(id=self.conversation_id)
+    #     message = Message.objects.create(
+    #         conversation=conversation,
+    #         sender=self.scope['user'],
+    #         content=content
+    #     )
+    #     print("========================================")
+    #     print(attachments)
+    #     print("========================================")
+    #     # Handle attachments
+    #     for attachment in attachments:
+    #         file_data = base64.b64decode(attachment['data'])
+    #         file_name = attachment['name']
+    #         file_type = attachment['type']
+    #         print("+++++++++++++++++++++++++++++++++++++")
+    #         print(file_data)
+    #         print(file_name)
+    #         print(file_type)
+    #         print("++++++++++++++++++++++++++++++++++++++")
+    #         file_url = upload_image(file_data, public_id=f'message_attachments/{message.id}/{file_name}')
+    #         print("File URL after upload:", file_url)
+    #         MessageAttachment.objects.create(
+    #             message=message,
+    #             # file=ContentFile(file_data, name=file_name),
+    #             file_url=file_url,
+    #             file_name=file_name,
+    #             file_type=file_type
+    #         )
 
-        # Prepare serializable message dict
-        result = {
-            'id': message.id,
-            'content': message.content,
-            'sender': {
-                'id': message.sender.id,
-                'username': message.sender.username,
-                'email': message.sender.email
-            },
-            'created_at': message.created_at.isoformat(),
-            'attachments': [
-                {
-                    'id': att.id,
-                    'file_name': att.file_name,
-                    'file_type': att.file_type,
-                    'file_url': att.file_url,
-                }
-                for att in message.attachments.all()
-            ]
-        } 
+    #     # Prepare serializable message dict
+    #     result = {
+    #         'id': message.id,
+    #         'content': message.content,
+    #         'sender': {
+    #             'id': message.sender.id,
+    #             'username': message.sender.username,
+    #             'email': message.sender.email
+    #         },
+    #         'created_at': message.created_at.isoformat(),
+    #         'attachments': [
+    #             {
+    #                 'id': att.id,
+    #                 'file_name': att.file_name,
+    #                 'file_type': att.file_type,
+    #                 'file_url': att.file_url,
+    #             }
+    #             for att in message.attachments.all()
+    #         ]
+    #     } 
 
-        print("Returning message dict:", result)
-        return result
+    #     print("Returning message dict:", result)
+    #     return result
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -167,4 +168,24 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             'type': 'notification',
             'notification': event['notification']
         }))
+    
+class AppLevelConsumer(AsyncWebsocketConsumer):
+
+    async def connect(self):
+        self.user = self.scope['user']
+        self.room_group_name = 'applevel_online'
+
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        await self.accept()
+    
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
     

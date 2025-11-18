@@ -82,6 +82,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
             
             return Response(message_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
     @action(detail=True, methods=['post'])
     def typing(self, request, pk=None):
