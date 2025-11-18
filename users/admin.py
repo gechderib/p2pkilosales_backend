@@ -61,12 +61,11 @@ class CustomUserAdmin(UserAdmin):
         if 'is_identity_verified' in form.changed_data and obj.is_identity_verified == 'completed':
             # Send verification notification to user
             notification_data = {
-                'message': f"Your identity verification has been completed successfully.",
-                # created at is now
+                'message': "Your identity verification has been completed successfully.",
+                'is_read':False,
                 'created_at': datetime.now().isoformat(),
-
             }
-            # send_notification_to_user.delay(obj.id, notification_data)
+            send_notification_to_user(obj.id, notification_data)
         if obj.is_identity_verified == 'completed' and obj.is_phone_verified and obj.is_email_verified:
             # Update is_profile_completed if all verifications are done
             obj.is_profile_completed = True
