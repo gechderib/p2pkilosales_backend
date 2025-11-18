@@ -198,27 +198,25 @@ class PackageRequestViewSet(StandardResponseViewSet):
     queryset = PackageRequest.objects.all()
     serializer_class = PackageRequestSerializer
     permission_classes = [permissions.IsAuthenticated, IsPackageRequestOwnerOrTravelListingOwner]
-
     def perform_create(self, serializer):
-        # Save the instance with user
         instance = serializer.save(user=self.request.user)
 
-        # Log order_click event
+        # Log event
         EventLog.objects.create(
             event_type='order_click',
             user=self.request.user,
             trip=instance.travel_listing
         )
 
-        # ---- Auto-send request as message ----
         travel_listing = instance.travel_listing
         traveler = travel_listing.user
 
-        # Get or create the conversation
+        # Conversation
         conversation, created = Conversation.objects.get_or_create(
             package_request=instance,
             defaults={'travel_listing': travel_listing}
         )
+
         if created:
             conversation.participants.set([self.request.user, traveler])
 
@@ -236,90 +234,82 @@ class PackageRequestViewSet(StandardResponseViewSet):
         for item, count in items.items():
             if count > 0:
                 has_items = True
-                plural = 's' if count > 1 and 'suitcase' not in item else ''
+                plural = 's' if count > 1 else ''
                 message_lines.append(f"- {count} x {item}{plural}")
 
-        if instance.weight and Decimal(instance.weight) > 0:
+        if instance.weight > 0:
             has_items = True
-            message_lines.append(
-                f"- {instance.weight}kg of other items ({instance.package_description or 'not specified'})."
-            )
+            message_lines.append(f"- {instance.weight}kg of other items ({instance.package_description}).")
 
         if not has_items:
             raise ValidationError("Cannot create an empty request. Please specify items or weight.")
 
-        message_lines.append(f"\nTotal price: {instance.total_price} {travel_listing.currency}")
-        message_content = "\n".join(message_lines)
-
-        # Create message in DB
         message = Message.objects.create(
             conversation=conversation,
             sender=self.request.user,
-            content=message_content
+            content="\n".join(message_lines)
         )
 
-        # Push message to channels (non-blocking)
+        # Push the message to socket
         try:
             channel_layer = get_channel_layer()
-            message_dict = {
-                'id': message.id,
-                'content': message.content,
-                'sender': {
-                    'id': message.sender.id,
-                    'username': message.sender.username,
-                    'email': message.sender.email
-                },
-                'created_at': message.created_at.isoformat(),
-                'attachments': []
-            }
             async_to_sync(channel_layer.group_send)(
                 f'chat_{conversation.id}',
                 {
                     'type': 'chat_message',
-                    'message': message_dict
+                    'message': {
+                        'id': message.id,
+                        'content': message.content,
+                        'sender': {
+                            'id': message.sender.id,
+                            'username': message.sender.username,
+                            'email': message.sender.email,
+                        },
+                        'created_at': message.created_at.isoformat(),
+                        'attachments': []
+                    }
                 }
             )
         except Exception as e:
-            print(f"Channel send failed: {e}")
+            print(f'Channel send failed: {e}')
 
-        return instance, conversation, message  # 👈 Return them for create()
+        return instance
 
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-    #     # Save + auto-message
-    #     instance, conversation, message = self.perform_create(serializer)
+        instance = self.perform_create(serializer)
 
-    #     # Build response payload
-    #     response_data = {
-    #         "package_request": PackageRequestSerializer(instance).data,
-    #         "conversation": {
-    #             "id": conversation.id,
-    #             "participants": [
-    #                 {"id": u.id, "username": u.username, "email": u.email}
-    #                 for u in conversation.participants.all()
-    #             ],
-    #             "created_at": conversation.created_at.isoformat(),
-    #         },
-    #         "message": {
-    #             "id": message.id,
-    #             "content": message.content,
-    #             "sender": {
-    #                 "id": message.sender.id,
-    #                 "username": message.sender.username,
-    #                 "email": message.sender.email
-    #             },
-    #             "created_at": message.created_at.isoformat(),
-    #             "attachments": []
-    #         }
-    #     }
+        conversation = Conversation.objects.get(package_request=instance)
+        message = Message.objects.filter(conversation=conversation).latest('id')
 
-    #     print(response_data)
-    #     return self._standardize_response(
-    #         Response(response_data, status=status.HTTP_201_CREATED),
-    #         status_code=status.HTTP_201_CREATED
-    #     )
+        response_data = {
+            "package_request": PackageRequestSerializer(instance).data,
+            "conversation": {
+                "id": conversation.id,
+                "participants": [
+                    {"id": u.id, "username": u.username, "email": u.email}
+                    for u in conversation.participants.all()
+                ],
+                "created_at": conversation.created_at.isoformat(),
+            },
+            "message": {
+                "id": message.id,
+                "content": message.content,
+                "sender": {
+                    "id": message.sender.id,
+                    "username": message.sender.username,
+                    "email": message.sender.email,
+                },
+                "created_at": message.created_at.isoformat(),
+                "attachments": [],
+            },
+        }
+
+        return self._standardize_response(
+            Response(response_data, status=status.HTTP_201_CREATED),
+        )
 
     def get_queryset(self):
         """
@@ -487,7 +477,7 @@ class PackageRequestViewSet(StandardResponseViewSet):
         notification = Notification.objects.create(
             user=package_request.user,
             travel_listing=package_request.travel_listing,
-            message=f"Your package request has been accepted."
+            message="Your package request has been accepted."
         )
         notification_serializer = NotificationSerializer(notification)
         send_notification_to_user(package_request.user.id, notification_serializer.data)
@@ -531,7 +521,7 @@ class PackageRequestViewSet(StandardResponseViewSet):
         notification = Notification.objects.create(
             user=package_request.user,
             travel_listing=package_request.travel_listing,
-            message=f"Your package request has been rejected."
+            message="Your package request has been rejected."
         )
         notification_serializer = NotificationSerializer(notification)
         send_notification_to_user(package_request.user.id, notification_serializer.data)
@@ -575,7 +565,7 @@ class PackageRequestViewSet(StandardResponseViewSet):
         notification = Notification.objects.create(
             user=package_request.user,
             travel_listing=package_request.travel_listing,
-            message=f"Your package request has been marked as completed."
+            message="Your package request has been marked as completed."
         )
         notification_serializer = NotificationSerializer(notification)
         send_notification_to_user(package_request.user.id, notification_serializer.data)

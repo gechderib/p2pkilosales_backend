@@ -52,7 +52,9 @@ def update_user_profile_total_trips_created(sender, instance, created, **kwargs)
 
 @receiver(post_save, sender=PackageRequest)
 def update_user_profile_total_offer_sent(sender, instance, **kwargs):
-    if 'status' in kwargs.get('update_fields', []):
+    
+    update_fields = kwargs.get('update_fields')
+    if update_fields and 'status' in update_fields:
         if instance.status == 'pending':
             instance.user.profile.total_offers_sent += 1
             instance.user.profile.save()

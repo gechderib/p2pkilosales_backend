@@ -148,6 +148,7 @@ class PackageRequestSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     "weight": f"Requested weight ({weight}kg) exceeds available capacity ({available_weight}kg)."
                 })
+        print("The data is: ", data)
         return data
 
     def _calculate_price(self, validated_data, travel_listing):
