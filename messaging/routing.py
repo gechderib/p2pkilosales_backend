@@ -6,6 +6,7 @@ def get_websocket_urlpatterns():
     return [
         re_path(r'ws/chat/(?P<conversation_id>\d+)/$', consumers.ChatConsumer.as_asgi()),
         re_path(r'ws/notifications/$', consumers.NotificationConsumer.as_asgi()),
+        re_path(r'ws/applevel/$', consumers.AppLevelConsumer.as_asgi()),
     ]
 
 websocket_urlpatterns = get_websocket_urlpatterns() 

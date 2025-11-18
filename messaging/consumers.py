@@ -181,6 +181,16 @@ class AppLevelConsumer(AsyncWebsocketConsumer):
         )
 
         await self.accept()
+
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'online_status',
+                'user_id': self.user.id,
+                'username': self.user.username,
+                'is_online': True
+            }
+        )
     
     async def disconnect(self, code):
         await self.channel_layer.group_discard(
@@ -188,4 +198,20 @@ class AppLevelConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'online_status',
+                'user_id': self.user.id,
+                'username': self.user.username,
+                'is_online': True
+            }
+        )
     
+    async def online_status(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'online_status',
+            'user_id': event['user_id'],
+            'username': event['username'],
+            'is_online': event['is_online']
+        }))
