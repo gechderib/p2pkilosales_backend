@@ -36,7 +36,7 @@ def notify_alerts_on_travel_listing(sender, instance, created, **kwargs):
         notification = Notification.objects.create(
             user=user,
             travel_listing=instance,
-            message=f"A new travel listing matches your alert: {instance}"
+            message=f"A new travel listing matches your alert: {instance.pickup_region} to {instance.destination_region} - {instance.travel_date}",
         )
         # Send notification via Django Channels
         serializer = NotificationSerializer(notification)

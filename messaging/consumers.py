@@ -38,16 +38,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             text_data_json = json.loads(text_data)
             message_type = text_data_json.get('type')
 
-            if message_type == 'message':
-                # Send message to room group
-                await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {
-                        'type': 'chat_message',
-                        'message': text_data_json
-                    }
-                )
-            elif message_type == 'typing':
+            if message_type == 'typing':
                 # Handle typing indicator
                 await self.channel_layer.group_send(
                     self.room_group_name,
@@ -58,6 +49,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         'is_typing': text_data_json.get('is_typing', False)
                     }
                 )
+            # elif message_type == 'message':
+            #     # Send message to room group
+            #     await self.channel_layer.group_send(
+            #         self.room_group_name,
+            #         {
+            #             'type': 'chat_message',
+            #             'message': text_data_json
+            #         }
+            #     )
 
         except Exception as e:
             import traceback
@@ -71,7 +71,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def chat_message(self, event):
         # Send message to WebSocket
-        print("the event message is", event['message'])
         await self.send(text_data=json.dumps({
             'type': 'message',
             'message': event['message']
@@ -115,6 +114,10 @@ class AppLevelConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         self.user = self.scope['user']
+        if not self.user.is_authenticated:
+            await self.close()
+            return
+        
         self.room_group_name = 'applevel_online'
 
         await self.channel_layer.group_add(
