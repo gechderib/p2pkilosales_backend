@@ -5,24 +5,30 @@ from cloudinary.utils import cloudinary_url
 from django.conf import settings
 from logging.handlers import TimedRotatingFileHandler
 
-class DailyTimedRotatingFileHandler(TimedRotatingFileHandler):
+from pythonjsonlogger import jsonlogger
+import datetime
+import os
+
+class DailyJSONFileHandler(TimedRotatingFileHandler):
     """
-    Produces logs like:
-    app-2025-12-14.log
+    Logs JSON into app-YYYY-MM-DD.log from first log
     """
 
     def __init__(self, filename, **kwargs):
-        super().__init__(filename, **kwargs)
+        base, ext = os.path.splitext(filename)
+        today = datetime.date.today().strftime("%Y-%m-%d")
+        filename = f"{base}-{today}{ext}"  # e.g., app-2025-12-16.log
 
-        # app.log.2025-12-14 -> app-2025-12-14.log
+        super().__init__(filename, when="midnight", interval=1, backupCount=30, **kwargs)
+
+        self.utc = False
         self.suffix = "%Y-%m-%d"
+        self.namer = lambda name: name.replace(".log.", "-") + ".log"
 
-        def namer(name):
-            base, date = name.rsplit(".", 1)
-            base = base.replace(".log", "")
-            return f"{base}-{date}.log"
-
-        self.namer = namer
+        formatter = jsonlogger.JsonFormatter(
+            "%(asctime)s %(levelname)s %(name)s %(message)s"
+        )
+        self.setFormatter(formatter)
 
 
 def standard_response(data=None, status_code=200, error=None):

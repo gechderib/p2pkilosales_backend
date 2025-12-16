@@ -279,67 +279,19 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
 
-    # ---------------- FORMATTERS ----------------
-    "formatters": {
-        "verbose": {
-            "format": "[{asctime}] {levelname} {name} {message} {process} {thread} {threadName} {processName} ",
-            "style": "{",
-        },
-        "simple": {
-            "format": "{levelname} {message}",
-            "style": "{",
-        },
-    },
-
-    # ---------------- HANDLERS ----------------
     "handlers": {
         "file": {
             "level": "INFO",
-
-            # 🔑 IMPORTANT: custom handler via "()"
-            "()": "config.utils.DailyTimedRotatingFileHandler",
-
-            "filename": os.path.join(BASE_DIR, "logs/app.log"),
-
-            # rotate daily
-            "when": "midnight",
-            "interval": 1,
-            "backupCount": 30,
-
-            "encoding": "utf-8",
-            "formatter": "verbose",
-
-            # local timezone (Africa/Addis_Ababa if set)
-            "utc": False,
+            "()": "config.utils.DailyJSONFileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/app.log"),  # base name only
         },
-
         "console": {
             "class": "logging.StreamHandler",
-            "formatter": "simple",
         },
     },
 
-    # ---------------- LOGGERS ----------------
     "loggers": {
-        "django": {
-            "handlers": ["file", "console"],
-            "level": "INFO",
-            "propagate": True,
-        },
-
-        "django.request": {
-            "handlers": ["file"],
-            "level": "WARNING",
-            "propagate": False,
-        },
-
-        "django.db.backends": {
-            "handlers": ["file"],
-            "level": "WARNING",
-            "propagate": False,
-        },
-
-        "app": {
+        "app": {  # Use this in your code
             "handlers": ["file", "console"],
             "level": "INFO",
             "propagate": False,

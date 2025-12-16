@@ -5,41 +5,38 @@ import uuid
 logger = logging.getLogger("app")
 
 class RequestLoggingMiddleware:
-    """
-    Logs every HTTP request & response
-    """
-
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        request_id = str(uuid.uuid4())
-        request.request_id = request_id
-
         start_time = time.time()
         response = self.get_response(request)
-        duration = round((time.time() - start_time) * 1000, 2)
+        duration_ms = round((time.time() - start_time) * 1000, 2)
 
-        user_id = (
-            request.user.id
-            if hasattr(request, "user") and request.user.is_authenticated
-            else None
-        )
+        status = response.status_code
 
-        logger.info(
+        if status >= 500:
+            log_level = logger.error
+        elif status >= 400:
+            log_level = logger.warning
+        else:
+            log_level = logger.info
+
+        log_level(
             "HTTP request completed",
             extra={
-                "request_id": request_id,
+                "request_id": getattr(request, "request_id", None),
                 "method": request.method,
                 "path": request.path,
-                "status_code": response.status_code,
-                "duration_ms": duration,
-                "user_id": user_id,
-                "ip": self.get_client_ip(request),
+                "status_code": status,
+                "duration_ms": duration_ms,
+                "user_id": (
+                    request.user.id if request.user.is_authenticated else None
+                ),
+                "ip": request.META.get("REMOTE_ADDR"),
             },
         )
 
-        response["X-Request-ID"] = request_id
         return response
 
     @staticmethod
