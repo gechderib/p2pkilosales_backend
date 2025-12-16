@@ -65,6 +65,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 MIDDLEWARE = [
+    'config.middleware.request_logging.RequestLoggingMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -272,3 +273,76 @@ CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # FIREBASE_CREDENTIAL = credentials.Certificate(os.path.join(BASE_DIR, 'adrash-firebase.json'))
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    # ---------------- FORMATTERS ----------------
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname} {name} {message} {process} {thread} {threadName} {processName} ",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+
+    # ---------------- HANDLERS ----------------
+    "handlers": {
+        "file": {
+            "level": "INFO",
+
+            # 🔑 IMPORTANT: custom handler via "()"
+            "()": "config.utils.DailyTimedRotatingFileHandler",
+
+            "filename": os.path.join(BASE_DIR, "logs/app.log"),
+
+            # rotate daily
+            "when": "midnight",
+            "interval": 1,
+            "backupCount": 30,
+
+            "encoding": "utf-8",
+            "formatter": "verbose",
+
+            # local timezone (Africa/Addis_Ababa if set)
+            "utc": False,
+        },
+
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+
+    # ---------------- LOGGERS ----------------
+    "loggers": {
+        "django": {
+            "handlers": ["file", "console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+
+        "django.request": {
+            "handlers": ["file"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+
+        "django.db.backends": {
+            "handlers": ["file"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+
+        "app": {
+            "handlers": ["file", "console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
