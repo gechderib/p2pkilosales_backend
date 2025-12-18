@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from .models import Conversation, Message, MessageAttachment, Notification
 from .serializers import (
@@ -15,6 +16,7 @@ from config.utils import standard_response
 
 # Create your views here.
 
+@extend_schema(tags=['Messaging'])
 class ConversationViewSet(viewsets.ModelViewSet):
     serializer_class = ConversationSerializer
     permission_classes = [IsAuthenticated]
@@ -52,6 +54,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
                 trip=conversation.travel_listing
             )
 
+    @extend_schema(tags=['Messaging'], description="Get all messages in a conversation")
     @action(detail=True, methods=['get'])
     def messages(self, request, pk=None):
         conversation = self.get_object()
@@ -65,6 +68,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data)
 
+    @extend_schema(tags=['Messaging'], description="Send a message in a conversation")
     @action(detail=True, methods=['post'])
     def send_message(self, request, pk=None):
         conversation = self.get_object()
@@ -84,6 +88,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
+    @extend_schema(tags=['Messaging'], description="Send typing indicator")
     @action(detail=True, methods=['post'])
     def typing(self, request, pk=None):
         conversation = self.get_object()
@@ -94,6 +99,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
         
         return Response({'status': 'success'})
 
+    @extend_schema(tags=['Messaging'], description="Get unread message count for all conversations")
     @action(detail=False, methods=['get'])
     def unread_count(self, request):
         user = request.user
@@ -109,6 +115,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
         
         return Response(unread_counts)
 
+@extend_schema(tags=['Messaging'])
 class MessageViewSet(StandardResponseViewSet):
     """
     API endpoint for messages
@@ -129,6 +136,7 @@ class MessageViewSet(StandardResponseViewSet):
             return [permissions.IsAuthenticated(), IsMessageOwner()]
         return [permissions.IsAuthenticated()]
 
+    @extend_schema(tags=['Messaging'], description="Mark a message as read")
     @action(detail=True, methods=['post'])
     def mark_as_read(self, request, pk=None):
         message = self.get_object()
@@ -136,6 +144,7 @@ class MessageViewSet(StandardResponseViewSet):
         message.save()
         return standard_response(data=self.get_serializer(message).data, status_code=status.HTTP_200_OK)
 
+    @extend_schema(tags=['Messaging'], description="Mark multiple messages as read")
     @action(detail=False, methods=['post'], url_path='mark_multiple_as_read')
     def mark_multiple_as_read(self, request):
         message_ids = request.data.get('message_ids', [])
@@ -150,6 +159,7 @@ class MessageViewSet(StandardResponseViewSet):
         return standard_response(data={'updated_count': updated_count, 'messages': serializer.data}, status_code=status.HTTP_200_OK)
 
 
+@extend_schema(tags=['Messaging'])
 class MessageAttachmentViewSet(viewsets.ModelViewSet):
     serializer_class = MessageAttachmentSerializer
     permission_classes = [IsAuthenticated]
@@ -173,6 +183,7 @@ class MessageAttachmentViewSet(viewsets.ModelViewSet):
         message_data = MessageSerializer(message).data
         send_message_to_conversation(message.conversation.id, message_data)
 
+@extend_schema(tags=['Messaging'])
 class NotificationViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -180,6 +191,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Notification.objects.filter(user=self.request.user)
 
+    @extend_schema(tags=['Messaging'], description="Mark a notification as read")
     @action(detail=True, methods=['post'])
     def mark_as_read(self, request, pk=None):
         notification = self.get_object()
@@ -187,6 +199,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
         notification.save()
         return Response(self.get_serializer(notification).data)
 
+    @extend_schema(tags=['Messaging'], description="Mark all notifications as read")
     @action(detail=False, methods=['post'])
     def mark_all_as_read(self, request):
         notifications = self.get_queryset().filter(is_read=False)

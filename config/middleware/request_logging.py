@@ -31,7 +31,9 @@ class RequestLoggingMiddleware:
                 "status_code": status,
                 "duration_ms": duration_ms,
                 "user_id": (
-                    request.user.id if request.user.is_authenticated else None
+                    getattr(request, "user", None).id
+                    if hasattr(request, "user") and request.user.is_authenticated
+                    else None
                 ),
                 "ip": request.META.get("REMOTE_ADDR"),
             },

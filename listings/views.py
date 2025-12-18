@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from django.db.models import Q
 from datetime import datetime
 from .models import TravelListing, PackageRequest, Alert, Country, Region, Review
@@ -63,6 +64,7 @@ class IsIdentityVerified(permissions.BasePermission):
         # For write operations, check if user is verified
         return request.user.is_authenticated and request.user.is_identity_verified == 'completed'
 
+@extend_schema(tags=['Travel Listings'])
 class TravelListingViewSet(StandardResponseViewSet):
     """
     API endpoint for travel listings
@@ -163,6 +165,7 @@ class TravelListingViewSet(StandardResponseViewSet):
 
         return queryset
 
+    @extend_schema(tags=['Travel Listings'], description="Get all travel listings created by the current user")
     @action(detail=False, methods=['get'])
     def my_listings(self, request):
         """
@@ -172,6 +175,7 @@ class TravelListingViewSet(StandardResponseViewSet):
         serializer = self.get_serializer(listings, many=True)
         return self._standardize_response(Response(serializer.data))
 
+    @extend_schema(tags=['Travel Listings'], description="Mark a travel listing as completed. Only the owner can complete their listing.")
     @action(detail=True, methods=['post'])
     def complete(self, request, pk=None):
         """
@@ -191,6 +195,7 @@ class TravelListingViewSet(StandardResponseViewSet):
         serializer = self.get_serializer(listing)
         return self._standardize_response(Response(serializer.data))
 
+@extend_schema(tags=['Package Requests'])
 class PackageRequestViewSet(StandardResponseViewSet):
     """
     API endpoint for package requests
@@ -321,6 +326,7 @@ class PackageRequestViewSet(StandardResponseViewSet):
             Q(user=self.request.user) |  # User is the package request creator
             Q(travel_listing__user=self.request.user)  # User is the travel listing owner
         )
+    @extend_schema(tags=['Package Requests'], description="Sends the package request details as a message to the traveler")
     @action(detail=True, methods=['post'], url_path='send-request-message')
     def send_request_in_message(self, request, pk=None):
         """
@@ -414,6 +420,7 @@ class PackageRequestViewSet(StandardResponseViewSet):
 
         return self._standardize_response(Response({"detail": "Request message sent successfully."}))
 
+    @extend_schema(tags=['Package Requests'], description="Get all package requests created by the current user")
     @action(detail=False, methods=['get'])
     def my_requests(self, request):
         """
@@ -423,6 +430,7 @@ class PackageRequestViewSet(StandardResponseViewSet):
         serializer = self.get_serializer(requests, many=True)
         return self._standardize_response(Response(serializer.data))
 
+    @extend_schema(tags=['Package Requests'], description="Get all package requests for travel listings owned by the current user")
     @action(detail=False, methods=['get'])
     def received_requests(self, request):
         """
@@ -432,6 +440,7 @@ class PackageRequestViewSet(StandardResponseViewSet):
         serializer = self.get_serializer(requests, many=True)
         return self._standardize_response(Response(serializer.data))
 
+    @extend_schema(tags=['Package Requests'], description="Accept a package request")
     @action(detail=True, methods=['post'])
     def accept(self, request, pk=None):
         """
@@ -483,6 +492,7 @@ class PackageRequestViewSet(StandardResponseViewSet):
         send_notification_to_user(package_request.user.id, notification_serializer.data)
         return self._standardize_response(Response(serializer.data))
 
+    @extend_schema(tags=['Package Requests'], description="Reject a package request")
     @action(detail=True, methods=['post'])
     def reject(self, request, pk=None):
         """
@@ -527,6 +537,7 @@ class PackageRequestViewSet(StandardResponseViewSet):
         send_notification_to_user(package_request.user.id, notification_serializer.data)
         return self._standardize_response(Response(serializer.data))
 
+    @extend_schema(tags=['Package Requests'], description="Mark a package request as completed. Only the travel listing owner can complete the request.")
     @action(detail=True, methods=['post'])
     def complete(self, request, pk=None):
         """
@@ -572,6 +583,7 @@ class PackageRequestViewSet(StandardResponseViewSet):
         return self._standardize_response(Response(serializer.data))
 
 
+@extend_schema(tags=['Alerts'])
 class AlertViewSet(StandardResponseViewSet):
     """
     API endpoint for travel alerts
@@ -629,6 +641,7 @@ class AlertViewSet(StandardResponseViewSet):
             )
         return super().perform_destroy(instance)
     
+    @extend_schema(tags=['Alerts'], description="Get all alerts created by the current user")
     @action(detail=False, methods=['get'])
     def my_alerts(self, request):
         """
@@ -638,6 +651,7 @@ class AlertViewSet(StandardResponseViewSet):
         serializer = self.get_serializer(alerts, many=True)
         return self._standardize_response(Response(serializer.data))
 
+    @extend_schema(tags=['Alerts'], description="Toggle the active status of an alert")
     @action(detail=True, methods=['post'])
     def toggle_active(self, request, pk=None):
         """
@@ -657,6 +671,7 @@ class AlertViewSet(StandardResponseViewSet):
         serializer = self.get_serializer(alert)
         return self._standardize_response(Response(serializer.data))
 
+@extend_schema(tags=['Locations'])
 class CountryViewSet(StandardResponseViewSet):
     """
     API endpoint for countries
@@ -671,6 +686,7 @@ class CountryViewSet(StandardResponseViewSet):
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
+@extend_schema(tags=['Locations'])
 class RegionViewSet(StandardResponseViewSet):
     """
     API endpoint for regions
@@ -692,6 +708,7 @@ class RegionViewSet(StandardResponseViewSet):
             queryset = queryset.filter(country_id=country_id)
         return queryset
 
+    @extend_schema(tags=['Locations'], description="Get all regions for a specific country")
     @action(detail=False, methods=['get'], url_path='by-country/(?P<country_id>[^/.]+)')
     def by_country(self, request, country_id=None):
         """
@@ -709,6 +726,7 @@ class RegionViewSet(StandardResponseViewSet):
                 )
             )
 
+@extend_schema(tags=['Reviews'])
 class ReviewViewSet(StandardResponseViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
@@ -723,12 +741,14 @@ class ReviewViewSet(StandardResponseViewSet):
     def perform_create(self, serializer):
         serializer.save(reviewer=self.request.user)
 
+    @extend_schema(tags=['Reviews'], description="Get reviews by travel listing owner")
     @action(detail=False, methods=['get'], url_path='by-travel-listing-owner/(?P<owner_id>[^/.]+)')
     def by_travel_listing_owner(self, request, owner_id=None):
         reviews = Review.objects.filter(travel_listing__user_id=owner_id)
         serializer = self.get_serializer(reviews, many=True)
         return self._standardize_response(Response(serializer.data))
 
+    @extend_schema(tags=['Reviews'], description="Get reviews by package request owner")
     @action(detail=False, methods=['get'], url_path='by-package-request-owner/(?P<owner_id>[^/.]+)')
     def by_package_request_owner(self, request, owner_id=None):
         reviews = Review.objects.filter(package_request__user_id=owner_id)
@@ -740,6 +760,7 @@ class IsReviewerOnly(IsAuthenticated):
         return obj.reviewer == request.user
 
 
+@extend_schema(tags=['Locations'])
 class TransportTypeViewset(StandardResponseViewSet):
     """
     API endpoint for transport types
@@ -754,6 +775,7 @@ class TransportTypeViewset(StandardResponseViewSet):
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
+@extend_schema(tags=['Locations'])
 class PackageTypeViewSet(StandardResponseViewSet):
     """
     API endpoint for package types

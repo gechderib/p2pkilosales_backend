@@ -32,9 +32,11 @@ import jwt
 from datetime import datetime
 from jwt.algorithms import RSAAlgorithm
 from .utils import send_verification_email
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 
 User = get_user_model()
 
+@extend_schema(tags=['User'], description="Login with username/email/phone and password")
 class UserLoginView(APIView):
     permission_classes = [AllowAny]
 
@@ -89,6 +91,7 @@ class UserLoginView(APIView):
             status_code=status.HTTP_200_OK
         )
 
+@extend_schema(tags=['User'], description="Logout by blacklisting the refresh token")
 class UserLogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -112,6 +115,7 @@ class UserLogoutView(APIView):
                 error=[str(e)]
             )
 
+@extend_schema(tags=['User'])
 class UserViewSet(StandardResponseViewSet):
     """
     API endpoint for users
@@ -198,6 +202,7 @@ class UserViewSet(StandardResponseViewSet):
             status_code=status.HTTP_200_OK
         )
 
+    @extend_schema(tags=['User'], description="Register a new user")
     @action(detail=False, methods=['post'])
     def register(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
@@ -230,6 +235,7 @@ class UserViewSet(StandardResponseViewSet):
             error=[f"{field}: {error[0]}" for field, error in serializer.errors.items()]
         )
 
+    @extend_schema(tags=['User'], description="Verify OTP for email or phone")
     @action(detail=False, methods=['post'])
     def verify_otp(self, request):
         serializer = OTPVerificationSerializer(data=request.data)
@@ -272,6 +278,7 @@ class UserViewSet(StandardResponseViewSet):
             status_code=status.HTTP_200_OK
         )
 
+    @extend_schema(tags=['User'], description="Resend OTP for email or phone verification or password reset")
     @action(detail=False, methods=['post'])
     def resend_otp(self, request):
         serializer = ResendOTPSerializer(data=request.data)
@@ -317,6 +324,7 @@ class UserViewSet(StandardResponseViewSet):
                 error=[f'Failed to send OTP: {str(e)}']
             )
     
+    @extend_schema(tags=['User'], description="Initiate forgot password flow")
     @action(detail=False, methods=['post'])
     def forgot_password(self, request):
         verification_method = request.data.get('verification_method')  # 'email' or 'phone'
@@ -424,6 +432,7 @@ class UserViewSet(StandardResponseViewSet):
                 error=[f'An error occurred: {str(e)}']
             )
 
+    @extend_schema(tags=['User'], description="Change password for authenticated user")
     @action(detail=False, methods=['post'])
     def change_password(self, request):
         serializer = PasswordChangeSerializer(data=request.data)
@@ -446,6 +455,7 @@ class UserViewSet(StandardResponseViewSet):
             error=[f"{field}: {error[0]}" for field, error in serializer.errors.items()]
         )
 
+    @extend_schema(tags=['User'], description="Accept privacy policy")
     @action(detail=False, methods=['post'])
     def accept_privacy_policy(self, request):
         serializer = PrivacyPolicyAcceptanceSerializer(data=request.data)
@@ -463,6 +473,7 @@ class UserViewSet(StandardResponseViewSet):
             error=[f"{field}: {error[0]}" for field, error in serializer.errors.items()]
         )
 
+    @extend_schema(tags=['Profile'], description="Get current user profile")
     @action(detail=False, methods=['get'])
     def me(self, request):
         serializer = self.get_serializer(request.user)
@@ -471,6 +482,7 @@ class UserViewSet(StandardResponseViewSet):
             status_code=status.HTTP_200_OK
         )
 
+    @extend_schema(tags=['User'], description="Reset password using verification code")
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def reset_password(self, request):
         user_id = request.data.get('user_id')
@@ -562,6 +574,7 @@ class UserViewSet(StandardResponseViewSet):
         )
     
     
+    @extend_schema(tags=['User'], description="Validate OTP without resetting password")
     @action(detail=False, methods=['post'])
     def validate_otp(self, request):
         user_id = request.data.get('user_id')
@@ -639,6 +652,7 @@ class UserViewSet(StandardResponseViewSet):
                 error=['Invalid verification method. Use "email" or "phone"']
             )
 
+    @extend_schema(tags=['User'], description="Send OTP to phone number")
     @action(detail=False, methods=['post'])
     def send_phone_otp(self, request):
         user = request.user
@@ -686,6 +700,7 @@ class UserViewSet(StandardResponseViewSet):
                 error=[f'An error occurred: {str(e)}']
             )
 
+    @extend_schema(tags=['User'], description="Verify phone OTP")
     @action(detail=False, methods=['post'])
     def verify_phone_otp(self, request):
         user = request.user
@@ -741,6 +756,7 @@ class UserViewSet(StandardResponseViewSet):
                 error=[f'An error occurred: {str(e)}']
             )
 
+    @extend_schema(tags=['User'], description="Set password for the first time (e.g. after social login)")
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def set_password(self, request):
         serializer = SetPasswordSerializer(data=request.data)
@@ -780,6 +796,7 @@ class UserViewSet(StandardResponseViewSet):
             status_code=status.HTTP_200_OK
         )
 
+    @extend_schema(tags=['User'], description="Register or login with Google")
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def register_google(self, request):
         """

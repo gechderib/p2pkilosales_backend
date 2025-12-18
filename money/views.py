@@ -1,4 +1,5 @@
 from rest_framework import views, viewsets, status, permissions
+from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from django.conf import settings
 from .models import PaymentGateway, Transaction, Wallet
@@ -8,11 +9,13 @@ import hmac
 import hashlib
 import json
 
+@extend_schema(tags=['Money'])
 class PaymentGatewayViewSet(viewsets.ModelViewSet):
     queryset = PaymentGateway.objects.all()
     serializer_class = PaymentGatewaySerializer
     permission_classes = [permissions.IsAdminUser] # Only admin can manage gateways
 
+@extend_schema(tags=['Money'], description="Initiate a deposit via Chapa")
 class DepositView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -36,6 +39,7 @@ class DepositView(views.APIView):
                 return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@extend_schema(tags=['Money'], description="Webhook for Chapa payment notifications", exclude=True)
 class ChapaWebhookView(views.APIView):
     permission_classes = [permissions.AllowAny]
 

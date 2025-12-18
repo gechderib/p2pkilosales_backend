@@ -60,12 +60,12 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'django_celery_beat',
     'django_celery_results',
+    'drf_spectacular',
     'money',
 ]
 SITE_ID = 1
 
 MIDDLEWARE = [
-    'config.middleware.request_logging.RequestLoggingMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -73,6 +73,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'config.middleware.request_logging.RequestLoggingMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
@@ -188,7 +189,15 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'PAGE_SIZE_QUERY_PARAM': 'page_size',
-    'EXCEPTION_HANDLER': 'config.exceptions.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'config.exceptions.custom_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'P2P KiloSales API',
+    'DESCRIPTION': 'API documentation for P2P KiloSales backend',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG
@@ -291,6 +300,11 @@ LOGGING = {
     },
 
     "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": True,
+        },
         "app": {  # Use this in your code
             "handlers": ["file", "console"],
             "level": "INFO",

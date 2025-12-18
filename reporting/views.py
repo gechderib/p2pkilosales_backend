@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 from django.db.models import Count, Q, Avg, Sum, F, DateField, DateTimeField
 from django.db.models.functions import TruncDay, TruncWeek, TruncMonth, TruncYear
 from users.models import CustomUser
@@ -13,6 +14,7 @@ class IsSuperUser(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.is_superuser
 
+@extend_schema(tags=['Reporting'])
 class AdminMetricsViewSet(StandardResponseViewSet):
     permission_classes = [IsSuperUser]
 
