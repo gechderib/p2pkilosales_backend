@@ -6,6 +6,7 @@ import uuid
 class Wallet(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='wallet')
     balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    locked_balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     currency = models.CharField(max_length=3, default='ETB')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -48,3 +49,22 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.transaction_type} - {self.amount} - {self.status}"
+
+class Bank(models.Model):
+    gateway = models.ForeignKey(PaymentGateway, on_delete=models.CASCADE, related_name='banks')
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=100, blank=True, null=True)
+    swift = models.CharField(max_length=50, blank=True, null=True)
+    acct_length = models.IntegerField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    is_mobilemoney = models.BooleanField(default=False)
+    currency = models.CharField(max_length=3, default='ETB')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('gateway', 'code')
+
+    def __str__(self):
+        return f"{self.name} ({self.gateway.name})"
