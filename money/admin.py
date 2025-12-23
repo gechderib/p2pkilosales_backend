@@ -1,8 +1,35 @@
 from django.contrib import admin, messages
 from django.shortcuts import redirect
 from django.urls import path
+from django.forms import widgets
+import json
 from .models import Wallet, PaymentGateway, Transaction, Bank
 from .services import ChapaService
+
+class PrettyJSONWidget(widgets.Textarea):
+    def __init__(self, attrs=None):
+        default_attrs = {'rows': '20', 'cols': '80', 'style': 'font-family: monospace;'}
+        if attrs:
+            default_attrs.update(attrs)
+        super().__init__(default_attrs)
+
+    def format_value(self, value):
+        if value is None:
+            return ""
+        
+        # If it's a string, it might be double-encoded or just raw string
+        if isinstance(value, str):
+            try:
+                # Try to parse it to a dict/list first
+                value = json.loads(value)
+            except (ValueError, TypeError):
+                # If it's not valid JSON string, just return it as is
+                return value
+                
+        try:
+            return json.dumps(value, indent=4, sort_keys=True)
+        except (ValueError, TypeError):
+            return value
 
 @admin.register(Bank)
 class BankAdmin(admin.ModelAdmin):
@@ -42,6 +69,11 @@ class PaymentGatewayAdmin(admin.ModelAdmin):
     list_display = ('name', 'code', 'is_active', 'updated_at')
     list_filter = ('is_active',)
     search_fields = ('name', 'code')
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name in ['config', 'required_fields']:
+            kwargs['widget'] = PrettyJSONWidget
+        return super().formfield_for_dbfield(db_field, **kwargs)
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
