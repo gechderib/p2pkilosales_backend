@@ -250,12 +250,19 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_BEAT_SCHEDULE = {
     'send-daily-report': {
-        'task': 'users.tasks.send_report',  # full path to the task
-        # 'schedule': crontab(hour=8, minute=0),  # every day at 08:00
-        # 'schedule': crontab(minute='*/15')      # every 15 minutes
-        # 
-        'schedule': 60000000,
-        'args': (),  # any arguments for the task
+        'task': 'users.tasks.send_report',
+        'schedule': 86400.0,  # Every 24 hours
+        'args': (),
+    },
+    'sync-chapa-banks': {
+        'task': 'money.tasks.sync_chapa_banks',
+        'schedule': 5000.0,  # Every 5000 seconds for testing
+        'args': (),
+    },
+    'verify-pending-transactions': {
+        'task': 'money.tasks.verify_pending_transfers',
+        'schedule': 300.0,  # Every 5 minutes
+        'args': (),
     },
 }
 

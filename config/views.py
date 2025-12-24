@@ -35,4 +35,16 @@ class StandardResponseViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         response = super().destroy(request, *args, **kwargs)
-        return self._standardize_response(response) 
+        return self._standardize_response(response)
+
+class StandardAPIView(viewsets.views.APIView):
+    """
+    Base APIView that provides standardized response format
+    """
+    def finalize_response(self, request, response, *args, **kwargs):
+        if hasattr(response, 'data'):
+            response = standard_response(
+                data=response.data,
+                status_code=response.status_code
+            )
+        return super().finalize_response(request, response, *args, **kwargs)

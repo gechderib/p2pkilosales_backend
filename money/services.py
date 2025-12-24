@@ -14,6 +14,51 @@ class ChapaService:
             'Content-Type': 'application/json'
         }
 
+    def verify_webhook_signature(self, body_data, chapa_signature=None, x_chapa_signature=None):
+        """
+        Verify the webhook signature from Chapa.
+        Chapa-Signature: HMAC SHA256 signature of secret key signed using secret key (constant).
+        x-chapa-signature: HMAC SHA256 signature of the event payload signed using secret key.
+        """
+        import hmac
+        import hashlib
+        
+        secret = self.config.get('CHAPA_SECRET_KEY')
+        if not secret:
+            return False
+
+        # 1. Verify x-chapa-signature (Payload signature)
+        if x_chapa_signature:
+            # Chapa sends JSON body. We need to ensure we use the exact same string representation.
+            # Usually, it's the raw body.
+            if isinstance(body_data, dict):
+                payload = json.dumps(body_data, separators=(',', ':'))
+            else:
+                payload = body_data
+
+            expected_signature = hmac.new(
+                secret.encode('utf-8'),
+                payload.encode('utf-8'),
+                hashlib.sha256
+            ).hexdigest()
+            
+            if hmac.compare_digest(expected_signature, x_chapa_signature):
+                return True
+
+        # 2. Verify chapa-signature (Secret key signature - constant)
+        if chapa_signature:
+            # "HMAC SHA256 signature of your secret key signed using your secret key"
+            expected_chapa_sig = hmac.new(
+                secret.encode('utf-8'),
+                secret.encode('utf-8'),
+                hashlib.sha256
+            ).hexdigest()
+            
+            if hmac.compare_digest(expected_chapa_sig, chapa_signature):
+                return True
+
+        return False
+
     def initialize_transaction(self, user, amount, email, first_name, last_name, callback_url=None):
         tx_ref = f"tx-{uuid.uuid4()}"
         

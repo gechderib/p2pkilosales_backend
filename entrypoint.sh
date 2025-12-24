@@ -21,6 +21,12 @@ python manage.py createsuperuser --noinput --username admin --email admin@exampl
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --clear
 
-# Start Daphne
-echo "Starting Daphne ..."
-exec daphne -b 0.0.0.0 -p 8000 config.asgi:application
+# Execute the command passed as arguments
+if [ "$#" -gt 0 ]; then
+    echo "Executing command: $@"
+    exec "$@"
+else
+    # Start Daphne as default
+    echo "Starting Daphne ..."
+    exec daphne -b 0.0.0.0 -p 8000 config.asgi:application
+fi

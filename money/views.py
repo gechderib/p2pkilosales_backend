@@ -1,22 +1,23 @@
-from rest_framework import views, viewsets, status, permissions
+from rest_framework import viewsets, status, permissions
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from django.conf import settings
 from .models import PaymentGateway, Transaction, Wallet, Bank
 from .services import ChapaService
 from .serializers import PaymentGatewaySerializer, DepositSerializer, WalletSerializer, TransactionSerializer, WithdrawalSerializer, BankSerializer
+from config.views import StandardResponseViewSet, StandardAPIView
 import hmac
 import hashlib
 import json
 
 @extend_schema(tags=['Money'])
-class PaymentGatewayViewSet(viewsets.ModelViewSet):
+class PaymentGatewayViewSet(StandardResponseViewSet):
     queryset = PaymentGateway.objects.all()
     serializer_class = PaymentGatewaySerializer
     permission_classes = [permissions.IsAdminUser]
 
 @extend_schema(tags=['Money'], description="Get user wallet balance")
-class WalletBalanceView(views.APIView):
+class WalletBalanceView(StandardAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
@@ -25,7 +26,7 @@ class WalletBalanceView(views.APIView):
         return Response(serializer.data)
 
 @extend_schema(tags=['Money'], description="List supported banks for withdrawal")
-class BanksListView(views.APIView):
+class BanksListView(StandardAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
@@ -42,10 +43,10 @@ class BanksListView(views.APIView):
                 pass
 
         serializer = BankSerializer(banks, many=True)
-        return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 @extend_schema(tags=['Money'], description="Initiate a withdrawal via Chapa")
-class WithdrawalView(views.APIView):
+class WithdrawalView(StandardAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -75,7 +76,7 @@ class WithdrawalView(views.APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @extend_schema(tags=['Money'], description="Transfer Approval Webhook for Chapa", exclude=True)
-class TransferApprovalView(views.APIView):
+class TransferApprovalView(StandardAPIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -110,7 +111,7 @@ class TransferApprovalView(views.APIView):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 @extend_schema(tags=['Money'], description="Initiate a deposit via Chapa")
-class DepositView(views.APIView):
+class DepositView(StandardAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -133,36 +134,56 @@ class DepositView(views.APIView):
                 return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@extend_schema(tags=['Money'], description="Webhook for Chapa payment notifications", exclude=True)
-class ChapaWebhookView(views.APIView):
+@extend_schema(tags=['Money'], description="Webhook for Chapa payment and payout notifications", exclude=True)
+class ChapaWebhookView(StandardAPIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        # Verify webhook signature if Chapa sends one (recommended)
-        # For now, we'll rely on the secret hash in headers if provided by Chapa
+        chapa_sig = request.headers.get('Chapa-Signature')
+        x_chapa_sig = request.headers.get('x-chapa-signature')
         
-        # In a real scenario, you should verify the signature using CHAPA_WEBHOOK_SECRET
-        # signature = request.headers.get('Chapa-Signature')
-        # ... verification logic ...
+        try:
+            chapa_service = ChapaService()
+            # Verify signature
+            if not chapa_service.verify_webhook_signature(request.data, chapa_sig, x_chapa_sig):
+                return Response({'status': 'error', 'message': 'Invalid signature'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        data = request.data
-        tx_ref = data.get('tx_ref')
-        
-        if tx_ref:
-            try:
-                chapa_service = ChapaService()
+            data = request.data
+            event_type = data.get('type')
+            event_status = data.get('status')
+            
+            # 1. Handle Payout (Withdrawal) Events
+            if event_type == 'Payout':
+                reference = data.get('reference')
+                if not reference:
+                    return Response({'status': 'error', 'message': 'Missing reference'}, status=status.HTTP_400_BAD_REQUEST)
+                
+                # Re-verify with Chapa API for security (as recommended by Chapa docs)
+                success, message = chapa_service.verify_transfer(reference)
+                return Response({'message': message}, status=status.HTTP_200_OK)
+
+            # 2. Handle Transaction (Deposit) Events
+            else:
+                tx_ref = data.get('tx_ref') or data.get('reference')
+                if not tx_ref:
+                    return Response({'status': 'error', 'message': 'Missing tx_ref'}, status=status.HTTP_400_BAD_REQUEST)
+
+                # Re-verify with Chapa API for security
                 success, message = chapa_service.verify_transaction(tx_ref)
                 if success:
-                    return Response({'status': 'success'}, status=status.HTTP_200_OK)
+                    return Response({'message': message}, status=status.HTTP_200_OK)
                 else:
-                    return Response({'status': 'failed', 'message': message}, status=status.HTTP_400_BAD_REQUEST)
-            except Exception as e:
-                return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-        return Response({'status': 'ignored'}, status=status.HTTP_200_OK)
+                    return Response({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Webhook error: {str(e)}")
+            return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @extend_schema(tags=['Money'], description="Verify a transaction status")
-class VerifyTransactionView(views.APIView):
+class VerifyTransactionView(StandardAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, tx_ref):
@@ -179,20 +200,20 @@ class VerifyTransactionView(views.APIView):
 
             if success:
                 return Response({
-                    'status': 'success', 
                     'message': message,
                     'transaction': transaction_data
                 }, status=status.HTTP_200_OK)
             else:
                 return Response({
-                    'status': 'failed', 
                     'message': message,
                     'transaction': transaction_data
                 }, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 @extend_schema(tags=['Money'], description="Verify a withdrawal status")
-class VerifyTransferView(views.APIView):
+class VerifyTransferView(StandardAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, tx_ref):
@@ -208,15 +229,13 @@ class VerifyTransferView(views.APIView):
 
             if success:
                 return Response({
-                    'status': 'success', 
                     'message': message,
                     'transaction': transaction_data
                 }, status=status.HTTP_200_OK)
             else:
                 return Response({
-                    'status': 'failed', 
                     'message': message,
                     'transaction': transaction_data
                 }, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
