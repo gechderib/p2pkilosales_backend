@@ -1,0 +1,6604 @@
+openapi: 3.0.3
+info:
+  title: P2P KiloSales API
+  version: 1.0.0
+  description: API documentation for P2P KiloSales backend
+paths:
+  /api/admin/metrics/:
+    get:
+      operationId: admin_metrics_retrieve
+      description: Base ViewSet that provides standardized response format
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: admin_metrics_create
+      description: Base ViewSet that provides standardized response format
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          description: No response body
+  /api/admin/metrics/{id}/:
+    get:
+      operationId: admin_metrics_retrieve_2
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: admin_metrics_update
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: admin_metrics_partial_update
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: admin_metrics_destroy
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/admin/metrics/avg_price_per_kg/:
+    get:
+      operationId: admin_metrics_avg_price_per_kg_retrieve
+      description: Returns the average price per kg for all trips.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/avg_time_to_first_package_request/:
+    get:
+      operationId: admin_metrics_avg_time_to_first_package_request_retrieve
+      description: Returns the average time (in hours) from trip creation to first
+        package request.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/cancellation_dispute_rates/:
+    get:
+      operationId: admin_metrics_cancellation_dispute_rates_retrieve
+      description: Returns the cancellation rates for trips and package requests.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/dashboard_data/:
+    get:
+      operationId: admin_metrics_dashboard_data_retrieve
+      description: |-
+        Aggregates key metrics for graphical dashboard display.
+        Returns data for users, trips, package requests, and activity over time.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/dau_wau_mau/:
+    get:
+      operationId: admin_metrics_dau_wau_mau_retrieve
+      description: Returns daily, weekly, and monthly active users (DAU, WAU, MAU).
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/funnel_conversion/:
+    get:
+      operationId: admin_metrics_funnel_conversion_retrieve
+      description: 'Returns funnel conversion metrics: travel created, request sent,
+        request accepted, delivery confirmed.'
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/kg_sold_vs_available/:
+    get:
+      operationId: admin_metrics_kg_sold_vs_available_retrieve
+      description: Returns the kg sold vs available (offered) in the system.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/new_users/:
+    get:
+      operationId: admin_metrics_new_users_retrieve
+      description: Returns the number of new users per day, week, month, and year.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/offer_to_message_ratio/:
+    get:
+      operationId: admin_metrics_offer_to_message_ratio_retrieve
+      description: Returns the ratio of users who clicked order vs message.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/offers_per_trip/:
+    get:
+      operationId: admin_metrics_offers_per_trip_retrieve
+      description: Returns the number of offers per trip.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/package_request_response_time_buckets/:
+    get:
+      operationId: admin_metrics_package_request_response_time_buckets_retrieve
+      description: Returns the distribution of package request response times in buckets.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/package_status_distribution/:
+    get:
+      operationId: admin_metrics_package_status_distribution_retrieve
+      description: Returns the distribution of package request statuses.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/route_saturation/:
+    get:
+      operationId: admin_metrics_route_saturation_retrieve
+      description: Returns the unfilled kg for each route (pickup/destination pair).
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/routes/:
+    get:
+      operationId: admin_metrics_routes_retrieve
+      description: Returns the most popular routes (pickup/destination region pairs).
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/total_kg_offered/:
+    get:
+      operationId: admin_metrics_total_kg_offered_retrieve
+      description: Returns the total kg offered across all trips.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/total_kg_sold/:
+    get:
+      operationId: admin_metrics_total_kg_sold_retrieve
+      description: Returns the total kg sold (accepted or completed package requests).
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/total_package_requests/:
+    get:
+      operationId: admin_metrics_total_package_requests_retrieve
+      description: Returns the total number of package requests.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/total_trips/:
+    get:
+      operationId: admin_metrics_total_trips_retrieve
+      description: Returns the total number of trips (TravelListing).
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/total_users/:
+    get:
+      operationId: admin_metrics_total_users_retrieve
+      description: Returns the total number of users in the system.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/trip_creators_vs_senders/:
+    get:
+      operationId: admin_metrics_trip_creators_vs_senders_retrieve
+      description: Returns the ratio of trip creators to senders.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/trips_per_day/:
+    get:
+      operationId: admin_metrics_trips_per_day_retrieve
+      description: Returns the number of trips created per day.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/trips_per_month/:
+    get:
+      operationId: admin_metrics_trips_per_month_retrieve
+      description: Returns the number of trips created per month.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/trips_per_week/:
+    get:
+      operationId: admin_metrics_trips_per_week_retrieve
+      description: Returns the number of trips created per week.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/trips_per_year/:
+    get:
+      operationId: admin_metrics_trips_per_year_retrieve
+      description: Returns the number of trips created per year.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/metrics/verified_travelers/:
+    get:
+      operationId: admin_metrics_verified_travelers_retrieve
+      description: Returns the number of users with completed identity verification.
+      tags:
+      - Reporting
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/listings/alerts/:
+    get:
+      operationId: listings_alerts_list
+      description: API endpoint for travel alerts
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Alerts
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAlertList'
+          description: ''
+    post:
+      operationId: listings_alerts_create
+      description: API endpoint for travel alerts
+      tags:
+      - Alerts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Alert'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+  /api/listings/alerts/{id}/:
+    get:
+      operationId: listings_alerts_retrieve
+      description: API endpoint for travel alerts
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alert.
+        required: true
+      tags:
+      - Alerts
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+    put:
+      operationId: listings_alerts_update
+      description: API endpoint for travel alerts
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alert.
+        required: true
+      tags:
+      - Alerts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Alert'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+    patch:
+      operationId: listings_alerts_partial_update
+      description: API endpoint for travel alerts
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alert.
+        required: true
+      tags:
+      - Alerts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAlert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAlert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAlert'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+    delete:
+      operationId: listings_alerts_destroy
+      description: API endpoint for travel alerts
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alert.
+        required: true
+      tags:
+      - Alerts
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/listings/alerts/{id}/toggle_active/:
+    post:
+      operationId: listings_alerts_toggle_active_create
+      description: Toggle the active status of an alert
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alert.
+        required: true
+      tags:
+      - Alerts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Alert'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+  /api/listings/alerts/my_alerts/:
+    get:
+      operationId: listings_alerts_my_alerts_retrieve
+      description: Get all alerts created by the current user
+      tags:
+      - Alerts
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+  /api/listings/countries/:
+    get:
+      operationId: listings_countries_list
+      description: API endpoint for countries
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCountryList'
+          description: ''
+    post:
+      operationId: listings_countries_create
+      description: API endpoint for countries
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Country'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Country'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Country'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+          description: ''
+  /api/listings/countries/{id}/:
+    get:
+      operationId: listings_countries_retrieve
+      description: API endpoint for countries
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this country.
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+          description: ''
+    put:
+      operationId: listings_countries_update
+      description: API endpoint for countries
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this country.
+        required: true
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Country'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Country'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Country'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+          description: ''
+    patch:
+      operationId: listings_countries_partial_update
+      description: API endpoint for countries
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this country.
+        required: true
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCountry'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCountry'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCountry'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+          description: ''
+    delete:
+      operationId: listings_countries_destroy
+      description: API endpoint for countries
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this country.
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/listings/package-types/:
+    get:
+      operationId: listings_package_types_list
+      description: API endpoint for package types
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPackageTypeList'
+          description: ''
+    post:
+      operationId: listings_package_types_create
+      description: API endpoint for package types
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PackageType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PackageType'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageType'
+          description: ''
+  /api/listings/package-types/{id}/:
+    get:
+      operationId: listings_package_types_retrieve
+      description: API endpoint for package types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this package type.
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageType'
+          description: ''
+    put:
+      operationId: listings_package_types_update
+      description: API endpoint for package types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this package type.
+        required: true
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PackageType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PackageType'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageType'
+          description: ''
+    patch:
+      operationId: listings_package_types_partial_update
+      description: API endpoint for package types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this package type.
+        required: true
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPackageType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPackageType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPackageType'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageType'
+          description: ''
+    delete:
+      operationId: listings_package_types_destroy
+      description: API endpoint for package types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this package type.
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/listings/packages/:
+    get:
+      operationId: listings_packages_list
+      description: API endpoint for package requests
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Package Requests
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPackageRequestList'
+          description: ''
+    post:
+      operationId: listings_packages_create
+      description: API endpoint for package requests
+      tags:
+      - Package Requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageRequest'
+          description: ''
+  /api/listings/packages/{id}/:
+    get:
+      operationId: listings_packages_retrieve
+      description: API endpoint for package requests
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this package request.
+        required: true
+      tags:
+      - Package Requests
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageRequest'
+          description: ''
+    put:
+      operationId: listings_packages_update
+      description: API endpoint for package requests
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this package request.
+        required: true
+      tags:
+      - Package Requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageRequest'
+          description: ''
+    patch:
+      operationId: listings_packages_partial_update
+      description: API endpoint for package requests
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this package request.
+        required: true
+      tags:
+      - Package Requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPackageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPackageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPackageRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageRequest'
+          description: ''
+    delete:
+      operationId: listings_packages_destroy
+      description: API endpoint for package requests
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this package request.
+        required: true
+      tags:
+      - Package Requests
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/listings/packages/{id}/accept/:
+    post:
+      operationId: listings_packages_accept_create
+      description: Accept a package request
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this package request.
+        required: true
+      tags:
+      - Package Requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageRequest'
+          description: ''
+  /api/listings/packages/{id}/complete/:
+    post:
+      operationId: listings_packages_complete_create
+      description: Mark a package request as completed. Only the travel listing owner
+        can complete the request.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this package request.
+        required: true
+      tags:
+      - Package Requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageRequest'
+          description: ''
+  /api/listings/packages/{id}/reject/:
+    post:
+      operationId: listings_packages_reject_create
+      description: Reject a package request
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this package request.
+        required: true
+      tags:
+      - Package Requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PackageRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageRequest'
+          description: ''
+  /api/listings/packages/my_requests/:
+    get:
+      operationId: listings_packages_my_requests_retrieve
+      description: Get all package requests created by the current user
+      tags:
+      - Package Requests
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageRequest'
+          description: ''
+  /api/listings/packages/received_requests/:
+    get:
+      operationId: listings_packages_received_requests_retrieve
+      description: Get all package requests for travel listings owned by the current
+        user
+      tags:
+      - Package Requests
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageRequest'
+          description: ''
+  /api/listings/regions/:
+    get:
+      operationId: listings_regions_list
+      description: API endpoint for regions
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRegionList'
+          description: ''
+    post:
+      operationId: listings_regions_create
+      description: API endpoint for regions
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Region'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Region'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Region'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+          description: ''
+  /api/listings/regions/{id}/:
+    get:
+      operationId: listings_regions_retrieve
+      description: API endpoint for regions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this region.
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+          description: ''
+    put:
+      operationId: listings_regions_update
+      description: API endpoint for regions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this region.
+        required: true
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Region'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Region'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Region'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+          description: ''
+    patch:
+      operationId: listings_regions_partial_update
+      description: API endpoint for regions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this region.
+        required: true
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRegion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRegion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRegion'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+          description: ''
+    delete:
+      operationId: listings_regions_destroy
+      description: API endpoint for regions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this region.
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/listings/regions/by-country/{country_id}/:
+    get:
+      operationId: listings_regions_by_country_retrieve
+      description: Get all regions for a specific country
+      parameters:
+      - in: path
+        name: country_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+          description: ''
+  /api/listings/reviews/:
+    get:
+      operationId: listings_reviews_list
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Reviews
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReviewList'
+          description: ''
+    post:
+      operationId: listings_reviews_create
+      description: Base ViewSet that provides standardized response format
+      tags:
+      - Reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Review'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Review'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+  /api/listings/reviews/{id}/:
+    get:
+      operationId: listings_reviews_retrieve
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this review.
+        required: true
+      tags:
+      - Reviews
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+    put:
+      operationId: listings_reviews_update
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this review.
+        required: true
+      tags:
+      - Reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Review'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Review'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+    patch:
+      operationId: listings_reviews_partial_update
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this review.
+        required: true
+      tags:
+      - Reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedReview'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedReview'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedReview'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+    delete:
+      operationId: listings_reviews_destroy
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this review.
+        required: true
+      tags:
+      - Reviews
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/listings/reviews/by-package-request-owner/{owner_id}/:
+    get:
+      operationId: listings_reviews_by_package_request_owner_retrieve
+      description: Get reviews by package request owner
+      parameters:
+      - in: path
+        name: owner_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Reviews
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+  /api/listings/reviews/by-travel-listing-owner/{owner_id}/:
+    get:
+      operationId: listings_reviews_by_travel_listing_owner_retrieve
+      description: Get reviews by travel listing owner
+      parameters:
+      - in: path
+        name: owner_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Reviews
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+  /api/listings/transport-types/:
+    get:
+      operationId: listings_transport_types_list
+      description: API endpoint for transport types
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTransportTypeList'
+          description: ''
+    post:
+      operationId: listings_transport_types_create
+      description: API endpoint for transport types
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransportType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransportType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TransportType'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransportType'
+          description: ''
+  /api/listings/transport-types/{id}/:
+    get:
+      operationId: listings_transport_types_retrieve
+      description: API endpoint for transport types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this transport type.
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransportType'
+          description: ''
+    put:
+      operationId: listings_transport_types_update
+      description: API endpoint for transport types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this transport type.
+        required: true
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransportType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransportType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TransportType'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransportType'
+          description: ''
+    patch:
+      operationId: listings_transport_types_partial_update
+      description: API endpoint for transport types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this transport type.
+        required: true
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTransportType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTransportType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTransportType'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransportType'
+          description: ''
+    delete:
+      operationId: listings_transport_types_destroy
+      description: API endpoint for transport types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this transport type.
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/listings/travel/:
+    get:
+      operationId: listings_travel_list
+      description: API endpoint for travel listings
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Travel Listings
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTravelListingList'
+          description: ''
+    post:
+      operationId: listings_travel_create
+      description: API endpoint for travel listings
+      tags:
+      - Travel Listings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TravelListing'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TravelListing'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TravelListing'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelListing'
+          description: ''
+  /api/listings/travel/{id}/:
+    get:
+      operationId: listings_travel_retrieve
+      description: API endpoint for travel listings
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this travel listing.
+        required: true
+      tags:
+      - Travel Listings
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelListing'
+          description: ''
+    put:
+      operationId: listings_travel_update
+      description: API endpoint for travel listings
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this travel listing.
+        required: true
+      tags:
+      - Travel Listings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TravelListing'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TravelListing'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TravelListing'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelListing'
+          description: ''
+    patch:
+      operationId: listings_travel_partial_update
+      description: API endpoint for travel listings
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this travel listing.
+        required: true
+      tags:
+      - Travel Listings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTravelListing'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTravelListing'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTravelListing'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelListing'
+          description: ''
+    delete:
+      operationId: listings_travel_destroy
+      description: API endpoint for travel listings
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this travel listing.
+        required: true
+      tags:
+      - Travel Listings
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/listings/travel/{id}/complete/:
+    post:
+      operationId: listings_travel_complete_create
+      description: Mark a travel listing as completed. Only the owner can complete
+        their listing.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this travel listing.
+        required: true
+      tags:
+      - Travel Listings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TravelListing'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TravelListing'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TravelListing'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelListing'
+          description: ''
+  /api/listings/travel/my_listings/:
+    get:
+      operationId: listings_travel_my_listings_retrieve
+      description: Get all travel listings created by the current user
+      tags:
+      - Travel Listings
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelListing'
+          description: ''
+  /api/messaging/attachments/:
+    get:
+      operationId: messaging_attachments_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMessageAttachmentList'
+          description: ''
+    post:
+      operationId: messaging_attachments_create
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageAttachment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MessageAttachment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MessageAttachment'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageAttachment'
+          description: ''
+  /api/messaging/attachments/{id}/:
+    get:
+      operationId: messaging_attachments_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageAttachment'
+          description: ''
+    put:
+      operationId: messaging_attachments_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageAttachment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MessageAttachment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MessageAttachment'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageAttachment'
+          description: ''
+    patch:
+      operationId: messaging_attachments_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMessageAttachment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMessageAttachment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMessageAttachment'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageAttachment'
+          description: ''
+    delete:
+      operationId: messaging_attachments_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/messaging/conversations/:
+    get:
+      operationId: messaging_conversations_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedConversationList'
+          description: ''
+    post:
+      operationId: messaging_conversations_create
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversationCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ConversationCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ConversationCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationCreate'
+          description: ''
+  /api/messaging/conversations/{id}/:
+    get:
+      operationId: messaging_conversations_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+    put:
+      operationId: messaging_conversations_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+    patch:
+      operationId: messaging_conversations_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedConversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedConversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedConversation'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+    delete:
+      operationId: messaging_conversations_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/messaging/conversations/{id}/messages/:
+    get:
+      operationId: messaging_conversations_messages_retrieve
+      description: Get all messages in a conversation
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+  /api/messaging/conversations/{id}/send_message/:
+    post:
+      operationId: messaging_conversations_send_message_create
+      description: Send a message in a conversation
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+  /api/messaging/conversations/{id}/typing/:
+    post:
+      operationId: messaging_conversations_typing_create
+      description: Send typing indicator
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+  /api/messaging/conversations/unread_count/:
+    get:
+      operationId: messaging_conversations_unread_count_retrieve
+      description: Get unread message count for all conversations
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+  /api/messaging/messages/:
+    get:
+      operationId: messaging_messages_list
+      description: API endpoint for messages
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMessageList'
+          description: ''
+    post:
+      operationId: messaging_messages_create
+      description: API endpoint for messages
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Message'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Message'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+  /api/messaging/messages/{id}/:
+    get:
+      operationId: messaging_messages_retrieve
+      description: API endpoint for messages
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this message.
+        required: true
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+    put:
+      operationId: messaging_messages_update
+      description: API endpoint for messages
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this message.
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Message'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Message'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+    patch:
+      operationId: messaging_messages_partial_update
+      description: API endpoint for messages
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this message.
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMessage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMessage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMessage'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+    delete:
+      operationId: messaging_messages_destroy
+      description: API endpoint for messages
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this message.
+        required: true
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/messaging/messages/{id}/mark_as_read/:
+    post:
+      operationId: messaging_messages_mark_as_read_create
+      description: Mark a message as read
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this message.
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Message'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Message'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+  /api/messaging/messages/mark_multiple_as_read/:
+    post:
+      operationId: messaging_messages_mark_multiple_as_read_create
+      description: Mark multiple messages as read
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Message'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Message'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+  /api/messaging/notifications/:
+    get:
+      operationId: messaging_notifications_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationList'
+          description: ''
+    post:
+      operationId: messaging_notifications_create
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Notification'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/messaging/notifications/{id}/:
+    get:
+      operationId: messaging_notifications_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+    put:
+      operationId: messaging_notifications_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Notification'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+    patch:
+      operationId: messaging_notifications_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNotification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNotification'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+    delete:
+      operationId: messaging_notifications_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/messaging/notifications/{id}/mark_as_read/:
+    post:
+      operationId: messaging_notifications_mark_as_read_create
+      description: Mark a notification as read
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Notification'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/messaging/notifications/mark_all_as_read/:
+    post:
+      operationId: messaging_notifications_mark_all_as_read_create
+      description: Mark all notifications as read
+      tags:
+      - Messaging
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Notification'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/money/balance/:
+    get:
+      operationId: money_balance_retrieve
+      description: Get user wallet balance
+      tags:
+      - Money
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/money/banks/:
+    get:
+      operationId: money_banks_retrieve
+      description: List supported banks for withdrawal
+      tags:
+      - Money
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/money/deposit/:
+    post:
+      operationId: money_deposit_create
+      description: Initiate a deposit via Chapa
+      tags:
+      - Money
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/money/gateways/:
+    get:
+      operationId: money_gateways_list
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Money
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPaymentGatewayList'
+          description: ''
+    post:
+      operationId: money_gateways_create
+      description: Base ViewSet that provides standardized response format
+      tags:
+      - Money
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentGateway'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PaymentGateway'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PaymentGateway'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentGateway'
+          description: ''
+  /api/money/gateways/{id}/:
+    get:
+      operationId: money_gateways_retrieve
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment gateway.
+        required: true
+      tags:
+      - Money
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentGateway'
+          description: ''
+    put:
+      operationId: money_gateways_update
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment gateway.
+        required: true
+      tags:
+      - Money
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentGateway'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PaymentGateway'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PaymentGateway'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentGateway'
+          description: ''
+    patch:
+      operationId: money_gateways_partial_update
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment gateway.
+        required: true
+      tags:
+      - Money
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPaymentGateway'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPaymentGateway'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPaymentGateway'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentGateway'
+          description: ''
+    delete:
+      operationId: money_gateways_destroy
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment gateway.
+        required: true
+      tags:
+      - Money
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/money/verify-transfer/{tx_ref}/:
+    get:
+      operationId: money_verify_transfer_retrieve
+      description: Verify a withdrawal status
+      parameters:
+      - in: path
+        name: tx_ref
+        schema:
+          type: string
+        required: true
+      tags:
+      - Money
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/money/verify/{tx_ref}/:
+    get:
+      operationId: money_verify_retrieve
+      description: Verify a transaction status
+      parameters:
+      - in: path
+        name: tx_ref
+        schema:
+          type: string
+        required: true
+      tags:
+      - Money
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/money/withdrawal/:
+    post:
+      operationId: money_withdrawal_create
+      description: Initiate a withdrawal via Chapa
+      tags:
+      - Money
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/users/apple/signin/:
+    post:
+      operationId: users_apple_signin_create
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/users/google/signin/:
+    post:
+      operationId: users_google_signin_create
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/users/id-types/:
+    get:
+      operationId: users_id_types_list
+      description: API endpoint for ID types
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedIdTypeList'
+          description: ''
+    post:
+      operationId: users_id_types_create
+      description: API endpoint for ID types
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IdType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IdType'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdType'
+          description: ''
+  /api/users/id-types/{id}/:
+    get:
+      operationId: users_id_types_retrieve
+      description: API endpoint for ID types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this id type.
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdType'
+          description: ''
+    put:
+      operationId: users_id_types_update
+      description: API endpoint for ID types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this id type.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IdType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IdType'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdType'
+          description: ''
+    patch:
+      operationId: users_id_types_partial_update
+      description: API endpoint for ID types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this id type.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedIdType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedIdType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedIdType'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdType'
+          description: ''
+    delete:
+      operationId: users_id_types_destroy
+      description: API endpoint for ID types
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this id type.
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/login/:
+    post:
+      operationId: users_login_create
+      description: Login with username/email/phone and password
+      tags:
+      - User
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/users/logout/:
+    post:
+      operationId: users_logout_create
+      description: Logout by blacklisting the refresh token
+      tags:
+      - User
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/users/price-setting/:
+    get:
+      operationId: users_price_setting_list
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTravelPriceSettingList'
+          description: ''
+    post:
+      operationId: users_price_setting_create
+      description: Base ViewSet that provides standardized response format
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TravelPriceSettingMutation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TravelPriceSettingMutation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TravelPriceSettingMutation'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelPriceSettingMutation'
+          description: ''
+  /api/users/price-setting/{id}/:
+    get:
+      operationId: users_price_setting_retrieve
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this travel price setting.
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelPriceSetting'
+          description: ''
+    put:
+      operationId: users_price_setting_update
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this travel price setting.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TravelPriceSettingMutation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TravelPriceSettingMutation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TravelPriceSettingMutation'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelPriceSettingMutation'
+          description: ''
+    patch:
+      operationId: users_price_setting_partial_update
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this travel price setting.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTravelPriceSettingMutation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTravelPriceSettingMutation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTravelPriceSettingMutation'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TravelPriceSettingMutation'
+          description: ''
+    delete:
+      operationId: users_price_setting_destroy
+      description: Base ViewSet that provides standardized response format
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this travel price setting.
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/profile/:
+    get:
+      operationId: users_profile_list
+      description: API endpoint for user profiles
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProfileList'
+          description: ''
+    post:
+      operationId: users_profile_create
+      description: Only allow users to create their own profile
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Profile'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /api/users/profile/{id}/:
+    get:
+      operationId: users_profile_retrieve
+      description: API endpoint for user profiles
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    put:
+      operationId: users_profile_update
+      description: Only allow users to update their own profile
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Profile'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    patch:
+      operationId: users_profile_partial_update
+      description: Only allow users to partially update their own profile
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    delete:
+      operationId: users_profile_destroy
+      description: Only allow users to delete their own profile
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/token/refresh/:
+    post:
+      operationId: users_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/users/users/:
+    get:
+      operationId: users_users_list
+      description: API endpoint for users
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - User
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserProfileList'
+          description: ''
+    post:
+      operationId: users_users_create
+      description: API endpoint for users
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/{id}/:
+    get:
+      operationId: users_users_retrieve
+      description: API endpoint for users
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this custom user.
+        required: true
+      tags:
+      - User
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    put:
+      operationId: users_users_update
+      description: Ensure users can only update their own account
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this custom user.
+        required: true
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    patch:
+      operationId: users_users_partial_update
+      description: Ensure users can only partially update their own account
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this custom user.
+        required: true
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    delete:
+      operationId: users_users_destroy
+      description: Ensure users can only delete their own account
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this custom user.
+        required: true
+      tags:
+      - User
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/users/accept_privacy_policy/:
+    post:
+      operationId: users_users_accept_privacy_policy_create
+      description: Accept privacy policy
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/change_password/:
+    post:
+      operationId: users_users_change_password_create
+      description: Change password for authenticated user
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/forgot_password/:
+    post:
+      operationId: users_users_forgot_password_create
+      description: Initiate forgot password flow
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/google_profile_info/:
+    post:
+      operationId: users_users_google_profile_info_create
+      description: |-
+        Accepts a Google id_token, verifies it, and returns first_name, last_name, and email.
+        Does not create a user.
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/me/:
+    get:
+      operationId: users_users_me_retrieve
+      description: Get current user profile
+      tags:
+      - Profile
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/register/:
+    post:
+      operationId: users_users_register_create
+      description: Register a new user
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/register_google/:
+    post:
+      operationId: users_users_register_google_create
+      description: Register or login with Google
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/register_telegram/:
+    post:
+      operationId: users_users_register_telegram_create
+      description: API endpoint for users
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/resend_otp/:
+    post:
+      operationId: users_users_resend_otp_create
+      description: Resend OTP for email or phone verification or password reset
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/reset_password/:
+    post:
+      operationId: users_users_reset_password_create
+      description: Reset password using verification code
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/send_phone_otp/:
+    post:
+      operationId: users_users_send_phone_otp_create
+      description: Send OTP to phone number
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/set_password/:
+    post:
+      operationId: users_users_set_password_create
+      description: Set password for the first time (e.g. after social login)
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/validate_otp/:
+    post:
+      operationId: users_users_validate_otp_create
+      description: Validate OTP without resetting password
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/verify_otp/:
+    post:
+      operationId: users_users_verify_otp_create
+      description: Verify OTP for email or phone
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/verify_phone_firebase/:
+    post:
+      operationId: users_users_verify_phone_firebase_create
+      description: |-
+        Verifies a user's phone number using a Firebase ID token.
+        Expects: { "firebase_id_token": "...", "user_id": ... }
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/users/users/verify_phone_otp/:
+    post:
+      operationId: users_users_verify_phone_otp_create
+      description: Verify phone OTP
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+components:
+  schemas:
+    Alert:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        pickup_country:
+          allOf:
+          - $ref: '#/components/schemas/Country'
+          readOnly: true
+        pickup_country_id:
+          type: integer
+          writeOnly: true
+        pickup_region:
+          allOf:
+          - $ref: '#/components/schemas/Region'
+          readOnly: true
+        pickup_region_id:
+          type: integer
+          writeOnly: true
+        destination_country:
+          allOf:
+          - $ref: '#/components/schemas/Country'
+          readOnly: true
+        destination_country_id:
+          type: integer
+          writeOnly: true
+        destination_region:
+          allOf:
+          - $ref: '#/components/schemas/Region'
+          readOnly: true
+        destination_region_id:
+          type: integer
+          writeOnly: true
+        from_travel_date:
+          type: string
+          format: date
+        to_travel_date:
+          type: string
+          format: date
+          nullable: true
+        notify_for_any_pickup_city:
+          type: boolean
+        notify_for_any_destination_city:
+          type: boolean
+        notify_me:
+          type: boolean
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - destination_country
+      - destination_country_id
+      - destination_region
+      - destination_region_id
+      - from_travel_date
+      - id
+      - pickup_country
+      - pickup_country_id
+      - pickup_region
+      - pickup_region_id
+      - updated_at
+      - user
+    BlankEnum:
+      enum:
+      - ''
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfile'
+          readOnly: true
+        travel_listing:
+          allOf:
+          - $ref: '#/components/schemas/TravelListing'
+          readOnly: true
+        package_request:
+          allOf:
+          - $ref: '#/components/schemas/PackageRequest'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        last_message:
+          type: string
+          readOnly: true
+        unread_count:
+          type: string
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - last_message
+      - package_request
+      - participants
+      - travel_listing
+      - unread_count
+      - updated_at
+    ConversationCreate:
+      type: object
+      properties:
+        participant_ids:
+          type: array
+          items:
+            type: integer
+          writeOnly: true
+        travel_listing_id:
+          type: integer
+        package_request_id:
+          type: integer
+      required:
+      - participant_ids
+    Country:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        code:
+          type: string
+          maxLength: 3
+        is_popular:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - id
+      - name
+      - updated_at
+    GenderEnum:
+      enum:
+      - male
+      - female
+      - other
+      type: string
+      description: |-
+        * `male` - Male
+        * `female` - Female
+        * `other` - Other
+    IdType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+      required:
+      - id
+      - name
+    IsIdentityVerifiedEnum:
+      enum:
+      - idle
+      - pending
+      - rejected
+      - completed
+      type: string
+      description: |-
+        * `idle` - Idle
+        * `pending` - Pending
+        * `rejected` - Rejected
+        * `completed` - Completed
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        conversation:
+          type: integer
+        sender:
+          allOf:
+          - $ref: '#/components/schemas/UserProfile'
+          readOnly: true
+        content:
+          type: string
+          nullable: true
+        is_read:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageAttachment'
+          readOnly: true
+        uploaded_files:
+          type: array
+          items:
+            type: string
+            format: uri
+          writeOnly: true
+      required:
+      - attachments
+      - conversation
+      - created_at
+      - id
+      - is_read
+      - sender
+    MessageAttachment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        file:
+          type: string
+          format: uri
+          writeOnly: true
+        file_name:
+          type: string
+          readOnly: true
+        file_url:
+          type: string
+          readOnly: true
+          nullable: true
+        file_type:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - file_name
+      - file_type
+      - file_url
+      - id
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        travel_listing:
+          type: integer
+          nullable: true
+        message:
+          type: string
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - message
+      - user
+    NullEnum:
+      enum:
+      - null
+    PackageRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        travel_listing:
+          type: integer
+        package_description:
+          type: string
+        weight:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          description: Weight in KG for items not counted by unit.
+        number_of_document:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        number_of_phone:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        number_of_tablet:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        number_of_pc:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        number_of_full_suitcase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        package_types:
+          type: array
+          items:
+            type: integer
+        total_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/PackageRequestStatusEnum'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - status
+      - total_price
+      - travel_listing
+      - updated_at
+      - user
+    PackageRequestStatusEnum:
+      enum:
+      - pending
+      - accepted
+      - rejected
+      - completed
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `accepted` - Accepted
+        * `rejected` - Rejected
+        * `completed` - Completed
+    PackageType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+      required:
+      - id
+      - name
+    PaginatedAlertList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alert'
+    PaginatedConversationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Conversation'
+    PaginatedCountryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Country'
+    PaginatedIdTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdType'
+    PaginatedMessageAttachmentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageAttachment'
+    PaginatedMessageList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+    PaginatedNotificationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    PaginatedPackageRequestList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PackageRequest'
+    PaginatedPackageTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PackageType'
+    PaginatedPaymentGatewayList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentGateway'
+    PaginatedProfileList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Profile'
+    PaginatedRegionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Region'
+    PaginatedReviewList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+    PaginatedTransportTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransportType'
+    PaginatedTravelListingList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TravelListing'
+    PaginatedTravelPriceSettingList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TravelPriceSetting'
+    PaginatedUserProfileList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfile'
+    PatchedAlert:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        pickup_country:
+          allOf:
+          - $ref: '#/components/schemas/Country'
+          readOnly: true
+        pickup_country_id:
+          type: integer
+          writeOnly: true
+        pickup_region:
+          allOf:
+          - $ref: '#/components/schemas/Region'
+          readOnly: true
+        pickup_region_id:
+          type: integer
+          writeOnly: true
+        destination_country:
+          allOf:
+          - $ref: '#/components/schemas/Country'
+          readOnly: true
+        destination_country_id:
+          type: integer
+          writeOnly: true
+        destination_region:
+          allOf:
+          - $ref: '#/components/schemas/Region'
+          readOnly: true
+        destination_region_id:
+          type: integer
+          writeOnly: true
+        from_travel_date:
+          type: string
+          format: date
+        to_travel_date:
+          type: string
+          format: date
+          nullable: true
+        notify_for_any_pickup_city:
+          type: boolean
+        notify_for_any_destination_city:
+          type: boolean
+        notify_me:
+          type: boolean
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedConversation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfile'
+          readOnly: true
+        travel_listing:
+          allOf:
+          - $ref: '#/components/schemas/TravelListing'
+          readOnly: true
+        package_request:
+          allOf:
+          - $ref: '#/components/schemas/PackageRequest'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        last_message:
+          type: string
+          readOnly: true
+        unread_count:
+          type: string
+          readOnly: true
+    PatchedCountry:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        code:
+          type: string
+          maxLength: 3
+        is_popular:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedIdType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+    PatchedMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        conversation:
+          type: integer
+        sender:
+          allOf:
+          - $ref: '#/components/schemas/UserProfile'
+          readOnly: true
+        content:
+          type: string
+          nullable: true
+        is_read:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageAttachment'
+          readOnly: true
+        uploaded_files:
+          type: array
+          items:
+            type: string
+            format: uri
+          writeOnly: true
+    PatchedMessageAttachment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        file:
+          type: string
+          format: uri
+          writeOnly: true
+        file_name:
+          type: string
+          readOnly: true
+        file_url:
+          type: string
+          readOnly: true
+          nullable: true
+        file_type:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedNotification:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        travel_listing:
+          type: integer
+          nullable: true
+        message:
+          type: string
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedPackageRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        travel_listing:
+          type: integer
+        package_description:
+          type: string
+        weight:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          description: Weight in KG for items not counted by unit.
+        number_of_document:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        number_of_phone:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        number_of_tablet:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        number_of_pc:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        number_of_full_suitcase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        package_types:
+          type: array
+          items:
+            type: integer
+        total_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/PackageRequestStatusEnum'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedPackageType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+    PatchedPaymentGateway:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        code:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_active:
+          type: boolean
+        config:
+          description: Configuration for the payment gateway (API keys, etc.)
+        required_fields:
+          description: List of required configuration fields
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        full_name:
+          type: string
+          readOnly: true
+        gender:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        nationality:
+          type: string
+          maxLength: 255
+        kyc_method:
+          type: string
+          maxLength: 255
+        two_factor_enabled:
+          type: boolean
+        device_fingerprint:
+          type: string
+          maxLength: 255
+        ip_address_last_login:
+          type: string
+          maxLength: 255
+        app_version:
+          type: string
+          maxLength: 255
+        device_os:
+          type: string
+          maxLength: 255
+        referral_code_used:
+          type: string
+          maxLength: 255
+        last_active:
+          type: string
+          format: date-time
+          nullable: true
+        total_trips_created:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        total_offer_sent:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        total_offer_received:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        total_completed_deliveries:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        average_rating:
+          type: number
+          format: double
+        total_rating_received:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        preferred_payment_method:
+          oneOf:
+          - $ref: '#/components/schemas/PreferredPaymentMethodEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        notification_setting: {}
+        profile_picture:
+          type: string
+          format: uri
+          writeOnly: true
+        profile_picture_url:
+          type: string
+          nullable: true
+          maxLength: 255
+        selfie_photo_url:
+          type: string
+          nullable: true
+          maxLength: 255
+        selfie_photo:
+          type: string
+          format: uri
+          writeOnly: true
+        address:
+          type: string
+          nullable: true
+        city_of_residence:
+          allOf:
+          - $ref: '#/components/schemas/Region'
+          readOnly: true
+        city_of_residence_id:
+          type: integer
+          writeOnly: true
+        id_type:
+          allOf:
+          - $ref: '#/components/schemas/IdType'
+          readOnly: true
+        id_type_id:
+          type: integer
+          writeOnly: true
+        issue_country:
+          allOf:
+          - $ref: '#/components/schemas/Country'
+          readOnly: true
+        issue_country_id:
+          type: integer
+          writeOnly: true
+        front_side_identity_card_url:
+          type: string
+          nullable: true
+          maxLength: 255
+        front_side_identity_card:
+          type: string
+          format: uri
+          writeOnly: true
+        back_side_identity_card_url:
+          type: string
+          nullable: true
+          maxLength: 255
+        back_side_identity_card:
+          type: string
+          format: uri
+          writeOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedRegion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        country:
+          type: integer
+        country_name:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedReview:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        travel_listing:
+          type: integer
+          readOnly: true
+        package_request:
+          type: integer
+        reviewer:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        rate:
+          type: integer
+          maximum: 5
+          minimum: 1
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedTransportType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+    PatchedTravelListing:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        pickup:
+          allOf:
+          - $ref: '#/components/schemas/RegionWithCountry'
+          readOnly: true
+        pickup_region_id:
+          type: integer
+          writeOnly: true
+        destination:
+          allOf:
+          - $ref: '#/components/schemas/RegionWithCountry'
+          readOnly: true
+        destination_region_id:
+          type: integer
+          writeOnly: true
+        travel_date:
+          type: string
+          format: date
+        travel_time:
+          type: string
+          format: time
+        mode_of_transport:
+          allOf:
+          - $ref: '#/components/schemas/TransportType'
+          readOnly: true
+        mode_of_transport_id:
+          type: integer
+          writeOnly: true
+        maximum_weight_in_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        notes:
+          type: string
+        price_per_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_document:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_phone:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_tablet:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_pc:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_file:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_full_suitcase:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        currency:
+          type: string
+          maxLength: 10
+        status:
+          $ref: '#/components/schemas/TravelListingStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedTravelPriceSettingMutation:
+      type: object
+      properties:
+        price_per_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        price_per_document:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        price_per_phone:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_tablet:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_pc:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_file:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_full_suitcase:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+    PatchedUserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          maxLength: 15
+        is_email_verified:
+          type: boolean
+          readOnly: true
+        is_phone_verified:
+          type: boolean
+          readOnly: true
+        is_identity_verified:
+          allOf:
+          - $ref: '#/components/schemas/IsIdentityVerifiedEnum'
+          readOnly: true
+        is_profile_completed:
+          type: boolean
+          readOnly: true
+        profile:
+          $ref: '#/components/schemas/Profile'
+        verification_status:
+          type: string
+          readOnly: true
+    PaymentGateway:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        code:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_active:
+          type: boolean
+        config:
+          description: Configuration for the payment gateway (API keys, etc.)
+        required_fields:
+          description: List of required configuration fields
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - id
+      - name
+      - updated_at
+    PreferredPaymentMethodEnum:
+      enum:
+      - bank_transfer
+      - telebirr
+      - cash
+      - system_coin
+      - others
+      type: string
+      description: |-
+        * `bank_transfer` - Bank Transfer
+        * `telebirr` - Tele Birr
+        * `cash` - Cash
+        * `system_coin` - System Coin
+        * `others` - Others
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        full_name:
+          type: string
+          readOnly: true
+        gender:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        nationality:
+          type: string
+          maxLength: 255
+        kyc_method:
+          type: string
+          maxLength: 255
+        two_factor_enabled:
+          type: boolean
+        device_fingerprint:
+          type: string
+          maxLength: 255
+        ip_address_last_login:
+          type: string
+          maxLength: 255
+        app_version:
+          type: string
+          maxLength: 255
+        device_os:
+          type: string
+          maxLength: 255
+        referral_code_used:
+          type: string
+          maxLength: 255
+        last_active:
+          type: string
+          format: date-time
+          nullable: true
+        total_trips_created:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        total_offer_sent:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        total_offer_received:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        total_completed_deliveries:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        average_rating:
+          type: number
+          format: double
+        total_rating_received:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        preferred_payment_method:
+          oneOf:
+          - $ref: '#/components/schemas/PreferredPaymentMethodEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        notification_setting: {}
+        profile_picture:
+          type: string
+          format: uri
+          writeOnly: true
+        profile_picture_url:
+          type: string
+          nullable: true
+          maxLength: 255
+        selfie_photo_url:
+          type: string
+          nullable: true
+          maxLength: 255
+        selfie_photo:
+          type: string
+          format: uri
+          writeOnly: true
+        address:
+          type: string
+          nullable: true
+        city_of_residence:
+          allOf:
+          - $ref: '#/components/schemas/Region'
+          readOnly: true
+        city_of_residence_id:
+          type: integer
+          writeOnly: true
+        id_type:
+          allOf:
+          - $ref: '#/components/schemas/IdType'
+          readOnly: true
+        id_type_id:
+          type: integer
+          writeOnly: true
+        issue_country:
+          allOf:
+          - $ref: '#/components/schemas/Country'
+          readOnly: true
+        issue_country_id:
+          type: integer
+          writeOnly: true
+        front_side_identity_card_url:
+          type: string
+          nullable: true
+          maxLength: 255
+        front_side_identity_card:
+          type: string
+          format: uri
+          writeOnly: true
+        back_side_identity_card_url:
+          type: string
+          nullable: true
+          maxLength: 255
+        back_side_identity_card:
+          type: string
+          format: uri
+          writeOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - city_of_residence
+      - created_at
+      - full_name
+      - id
+      - id_type
+      - issue_country
+      - updated_at
+    Region:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        country:
+          type: integer
+        country_name:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - country
+      - country_name
+      - created_at
+      - id
+      - name
+      - updated_at
+    RegionWithCountry:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        country:
+          type: integer
+        display_name:
+          type: string
+          readOnly: true
+      required:
+      - country
+      - display_name
+      - id
+      - name
+    Review:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        travel_listing:
+          type: integer
+          readOnly: true
+        package_request:
+          type: integer
+        reviewer:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        rate:
+          type: integer
+          maximum: 5
+          minimum: 1
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - package_request
+      - rate
+      - reviewer
+      - travel_listing
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TransportType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+      required:
+      - id
+      - name
+    TravelListing:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        pickup:
+          allOf:
+          - $ref: '#/components/schemas/RegionWithCountry'
+          readOnly: true
+        pickup_region_id:
+          type: integer
+          writeOnly: true
+        destination:
+          allOf:
+          - $ref: '#/components/schemas/RegionWithCountry'
+          readOnly: true
+        destination_region_id:
+          type: integer
+          writeOnly: true
+        travel_date:
+          type: string
+          format: date
+        travel_time:
+          type: string
+          format: time
+        mode_of_transport:
+          allOf:
+          - $ref: '#/components/schemas/TransportType'
+          readOnly: true
+        mode_of_transport_id:
+          type: integer
+          writeOnly: true
+        maximum_weight_in_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        notes:
+          type: string
+        price_per_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_document:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_phone:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_tablet:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_pc:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_file:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_full_suitcase:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        currency:
+          type: string
+          maxLength: 10
+        status:
+          $ref: '#/components/schemas/TravelListingStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - destination
+      - destination_region_id
+      - id
+      - maximum_weight_in_kg
+      - mode_of_transport
+      - mode_of_transport_id
+      - pickup
+      - pickup_region_id
+      - travel_date
+      - travel_time
+      - updated_at
+      - user
+    TravelListingStatusEnum:
+      enum:
+      - drafted
+      - published
+      - completed
+      - canceled
+      - fully-booked
+      type: string
+      description: |-
+        * `drafted` - Drafted
+        * `published` - Published
+        * `completed` - Completed
+        * `canceled` - Canceled
+        * `fully-booked` - Fully Booked
+    TravelPriceSetting:
+      type: object
+      properties:
+        user:
+          type: integer
+        price_per_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        price_per_document:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        price_per_phone:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_tablet:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_pc:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_file:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_full_suitcase:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - price_per_document
+      - price_per_kg
+      - updated_at
+      - user
+    TravelPriceSettingMutation:
+      type: object
+      properties:
+        price_per_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        price_per_document:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        price_per_phone:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_tablet:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_pc:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_per_file:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        price_full_suitcase:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+      required:
+      - price_per_document
+      - price_per_kg
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          maxLength: 15
+        is_email_verified:
+          type: boolean
+          readOnly: true
+        is_phone_verified:
+          type: boolean
+          readOnly: true
+        is_identity_verified:
+          allOf:
+          - $ref: '#/components/schemas/IsIdentityVerifiedEnum'
+          readOnly: true
+        is_profile_completed:
+          type: boolean
+          readOnly: true
+        profile:
+          $ref: '#/components/schemas/Profile'
+        verification_status:
+          type: string
+          readOnly: true
+      required:
+      - email
+      - id
+      - is_email_verified
+      - is_identity_verified
+      - is_phone_verified
+      - is_profile_completed
+      - phone_number
+      - username
+      - verification_status
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

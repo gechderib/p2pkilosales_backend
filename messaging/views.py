@@ -32,19 +32,10 @@ class ConversationViewSet(viewsets.ModelViewSet):
         return ConversationSerializer
 
     def perform_create(self, serializer):
+        # This viewset is typically used for manual conversation creation.
+        # We can still use the helper if we want to ensure uniqueness.
         conversation = serializer.save()
-        user_ids = {self.request.user.id}
-
-        # Add travel_listing owner if exists
-        if conversation.travel_listing and conversation.travel_listing.user:
-            user_ids.add(conversation.travel_listing.user.id)
-
-        # Add package_request owner if exists
-        if conversation.package_request and conversation.package_request.user:
-            user_ids.add(conversation.package_request.user.id)
-
-        conversation.participants.add(*user_ids)
-
+        
         # Log message_click event if related to a trip
         if conversation.travel_listing:
             from reporting.models import EventLog

@@ -43,27 +43,35 @@ def notify_alerts_on_travel_listing(sender, instance, created, **kwargs):
         send_notification_to_user(user.id, serializer.data) 
 
 
+from django.db.models import F
+
 @receiver(post_save, sender=TravelListing)
 def update_user_profile_total_trips_created(sender, instance, created, **kwargs):
     if created:
-        print("Its created successfully")
-        instance.user.profile.total_trips_created += 1
-        instance.user.profile.save()
+        instance.user.profile.__class__.objects.filter(pk=instance.user.profile.pk).update(
+            total_trips_created=F('total_trips_created') + 1
+        )
 
 @receiver(post_save, sender=PackageRequest)
-def update_user_profile_total_offer_sent(sender, instance, **kwargs):
+def update_user_profile_stats(sender, instance, created, **kwargs):
+    profile_model = instance.user.profile.__class__
+    
+    if created:
+        # Update offer sent for requester
+        profile_model.objects.filter(pk=instance.user.profile.pk).update(
+            total_offer_sent=F('total_offer_sent') + 1
+        )
+        # Update offer received for traveler
+        profile_model.objects.filter(pk=instance.travel_listing.user.profile.pk).update(
+            total_offer_received=F('total_offer_received') + 1
+        )
     
     update_fields = kwargs.get('update_fields')
     if update_fields and 'status' in update_fields:
-        if instance.status == 'pending':
-            instance.user.profile.total_offers_sent += 1
-            instance.user.profile.save()
-        if instance.status == 'accepted':
-            instance.travel_listing.user.profile.total_offer_received += 1
-            instance.travel_listing.user.profile.save()
         if instance.status == "completed":
-            instance.user.profile.total_completed_deliveries += 1
-            instance.user.profile.save()
+            profile_model.objects.filter(pk=instance.user.profile.pk).update(
+                total_completed_deliveries=F('total_completed_deliveries') + 1
+            )
 
 
 @receiver(post_save, sender=Review)

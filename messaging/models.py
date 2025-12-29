@@ -28,6 +28,30 @@ class Conversation(models.Model):
     def __str__(self):
         return f"Conversation {self.id} - {self.participants.count()} participants"
 
+    @staticmethod
+    def get_or_create_conversation(user1, user2):
+        """
+        Finds or creates a 1-on-1 conversation between two users.
+        """
+        from django.db.models import Count
+        
+        # Look for an existing conversation with exactly these two participants
+        conversation = Conversation.objects.annotate(
+            num_participants=Count('participants')
+        ).filter(
+            num_participants=2,
+            participants=user1
+        ).filter(
+            participants=user2
+        ).first()
+
+        if not conversation:
+            conversation = Conversation.objects.create()
+            conversation.participants.add(user1, user2)
+            return conversation, True
+        
+        return conversation, False
+
 class Message(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='sent_messages')

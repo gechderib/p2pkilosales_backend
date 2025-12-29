@@ -136,22 +136,14 @@ class Profile(models.Model):
                 previous.selfie_photo_url != self.selfie_photo_url):
                 if (self.front_side_identity_card_url and 
                     self.back_side_identity_card_url and self.selfie_photo_url):
-                    self.user.is_identity_verified = 'pending'
-                    self.user.save()
+                    # Use update to avoid triggering signals/recursion
+                    CustomUser.objects.filter(pk=self.user.pk).update(is_identity_verified='pending')
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.get_full_name()}'s Profile"
 
 
-@receiver(post_save, sender=CustomUser)
-def save_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-    else:
-        # Only save the profile if it exists
-        if hasattr(instance, 'profile'):
-            instance.profile.save()
 
 class OTP(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='otps')
