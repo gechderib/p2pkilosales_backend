@@ -125,3 +125,5 @@ def recalculate_user_rating_on_delete(sender, instance, **kwargs):
             profile.average_rating = 0
 
         profile.save(update_fields=["total_rating_received", "average_rating"])
+
+

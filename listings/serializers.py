@@ -56,6 +56,32 @@ class TravelListingSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['user', 'created_at', 'updated_at', 'pickup', 'destination', 'mode_of_transport']
 
+    def validate(self, data):
+        """
+        Ensure that at least one pricing field is provided.
+        """
+        pricing_fields = [
+            'price_per_kg', 'price_per_document', 'price_per_phone',
+            'price_per_tablet', 'price_per_pc', 'price_per_file',
+            'price_full_suitcase'
+        ]
+        
+        # On update, we need to consider existing values if not provided in data
+        if self.instance:
+            has_pricing = any(
+                data.get(field, getattr(self.instance, field)) is not None 
+                for field in pricing_fields
+            )
+        else:
+            has_pricing = any(data.get(field) is not None for field in pricing_fields)
+
+        if not has_pricing:
+            raise serializers.ValidationError(
+                "At least one pricing method (e.g., price per kg, per document, or full suitcase) must be provided."
+            )
+        
+        return data
+
     def create(self, validated_data):
         pickup_region = validated_data.pop('pickup_region')
         destination_region = validated_data.pop('destination_region')
