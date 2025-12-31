@@ -13,11 +13,13 @@ from .utils import send_message_to_conversation, send_typing_indicator
 from config.views import StandardResponseViewSet
 from .permissions import IsMessageOwner
 from config.utils import standard_response
+from django.utils import timezone
+import datetime
 
 # Create your views here.
 
 @extend_schema(tags=['Messaging'])
-class ConversationViewSet(viewsets.ModelViewSet):
+class ConversationViewSet(StandardResponseViewSet):
     serializer_class = ConversationSerializer
     permission_classes = [IsAuthenticated]
 
@@ -79,17 +81,6 @@ class ConversationViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-    @extend_schema(tags=['Messaging'], description="Send typing indicator")
-    @action(detail=True, methods=['post'])
-    def typing(self, request, pk=None):
-        conversation = self.get_object()
-        is_typing = request.data.get('is_typing', False)
-        
-        # Send typing indicator through WebSocket
-        send_typing_indicator(conversation.id, request.user.id, is_typing)
-        
-        return Response({'status': 'success'})
-
     @extend_schema(tags=['Messaging'], description="Get unread message count for all conversations")
     @action(detail=False, methods=['get'])
     def unread_count(self, request):
@@ -133,7 +124,34 @@ class MessageViewSet(StandardResponseViewSet):
         message = self.get_object()
         message.is_read = True
         message.save()
-        return standard_response(data=self.get_serializer(message).data, status_code=status.HTTP_200_OK)
+        return Response(self.get_serializer(message).data)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.created_at < timezone.now() - datetime.timedelta(days=1):
+            return standard_response(
+                status_code=status.HTTP_403_FORBIDDEN,
+                error=["Messages older than 24 hours cannot be updated."]
+            )
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.created_at < timezone.now() - datetime.timedelta(days=1):
+            return standard_response(
+                status_code=status.HTTP_403_FORBIDDEN,
+                error=["Messages older than 24 hours cannot be updated."]
+            )
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.created_at < timezone.now() - datetime.timedelta(days=1):
+            return standard_response(
+                status_code=status.HTTP_403_FORBIDDEN,
+                error=["Messages older than 24 hours cannot be deleted."]
+            )
+        return super().destroy(request, *args, **kwargs)
 
     @extend_schema(tags=['Messaging'], description="Mark multiple messages as read")
     @action(detail=False, methods=['post'], url_path='mark_multiple_as_read')
