@@ -216,13 +216,8 @@ class PackageRequestViewSet(StandardResponseViewSet):
         travel_listing = instance.travel_listing
         traveler = travel_listing.user
 
-        # Conversation
+        # Get or create conversation between the package requester and the traveler
         conversation, created = Conversation.get_or_create_conversation(self.request.user, traveler)
-        
-        # Link to this request if it's the first time
-        if not conversation.package_request:
-            conversation.package_request = instance
-            conversation.save(update_fields=['package_request'])
 
         # Build message
         message_lines = ["Hi! I'd like to send the following items:"]
@@ -277,15 +272,14 @@ class PackageRequestViewSet(StandardResponseViewSet):
         except Exception as e:
             print(f'Channel send failed: {e}')
 
-        return instance
+        return instance, conversation
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        instance = self.perform_create(serializer)
+        instance, conversation = self.perform_create(serializer)
 
-        conversation = Conversation.objects.get(package_request=instance)
         message = Message.objects.filter(conversation=conversation).latest('id')
 
         response_data = {
@@ -311,9 +305,7 @@ class PackageRequestViewSet(StandardResponseViewSet):
             },
         }
 
-        return self._standardize_response(
-            Response(response_data, status=status.HTTP_201_CREATED),
-        )
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
     def get_queryset(self):
         """

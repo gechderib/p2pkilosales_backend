@@ -1,24 +1,14 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from users.models import CustomUser
-from listings.models import TravelListing, PackageRequest
+from listings.models import TravelListing
+
 
 class Conversation(models.Model):
+    """
+    Conversations are purely between users, not linked to packages or travel listings.
+    """
     participants = models.ManyToManyField(CustomUser, related_name='conversations')
-    travel_listing = models.ForeignKey(
-        TravelListing,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='conversations'
-    )
-    package_request = models.ForeignKey(
-        PackageRequest,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='conversations'
-    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

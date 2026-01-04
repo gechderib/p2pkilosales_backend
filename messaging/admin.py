@@ -19,8 +19,8 @@ class MessageInline(admin.TabularInline):
 
 @admin.register(Conversation)
 class ConversationAdmin(admin.ModelAdmin):
-    list_display = ['id', 'participants_display', 'travel_listing_link', 'package_request_link', 'message_count', 'created_at', 'updated_at']
-    list_filter = ['created_at', 'updated_at', 'travel_listing', 'package_request']
+    list_display = ['id', 'participants_display', 'message_count', 'created_at', 'updated_at']
+    list_filter = ['created_at', 'updated_at']
     search_fields = ['participants__username', 'participants__email']
     readonly_fields = ['created_at', 'updated_at', 'message_count_display']
     filter_horizontal = ['participants']
@@ -29,10 +29,6 @@ class ConversationAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Basic Information', {
             'fields': ('participants', 'created_at', 'updated_at')
-        }),
-        ('Related Items', {
-            'fields': ('travel_listing', 'package_request'),
-            'classes': ('collapse',)
         }),
         ('Statistics', {
             'fields': ('message_count_display',),
@@ -46,20 +42,6 @@ class ConversationAdmin(admin.ModelAdmin):
             return ", ".join([p.username for p in participants])
         return "No participants"
     participants_display.short_description = "Participants"
-
-    def travel_listing_link(self, obj):
-        if obj.travel_listing:
-            url = reverse('admin:listings_travellisting_change', args=[obj.travel_listing.id])
-            return format_html('<a href="{}">Travel Listing {}</a>', url, obj.travel_listing.id)
-        return "None"
-    travel_listing_link.short_description = "Travel Listing"
-
-    def package_request_link(self, obj):
-        if obj.package_request:
-            url = reverse('admin:listings_packagerequest_change', args=[obj.package_request.id])
-            return format_html('<a href="{}">Package Request {}</a>', url, obj.package_request.id)
-        return "None"
-    package_request_link.short_description = "Package Request"
 
     def message_count(self, obj):
         return obj.messages.count()

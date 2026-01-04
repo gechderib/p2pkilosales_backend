@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Conversation, Message, MessageAttachment, Notification
 from users.serializers import UserProfileSerializer
-from listings.serializers import TravelListingSerializer, PackageRequestSerializer
 from config.utils import upload_image
 class MessageAttachmentSerializer(serializers.ModelSerializer):
     file = serializers.FileField(write_only=True, required=False)
@@ -101,15 +100,12 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class ConversationSerializer(serializers.ModelSerializer):
     participants = UserProfileSerializer(many=True, read_only=True)
-    travel_listing = TravelListingSerializer(read_only=True)
-    package_request = PackageRequestSerializer(read_only=True)
     last_message = serializers.SerializerMethodField()
     unread_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
-        fields = ('id', 'participants', 'travel_listing', 'package_request',
-                 'created_at', 'updated_at', 'last_message', 'unread_count')
+        fields = ('id', 'participants', 'created_at', 'updated_at', 'last_message', 'unread_count')
         read_only_fields = ('created_at', 'updated_at')
 
     def get_last_message(self, obj):
@@ -123,37 +119,30 @@ class ConversationSerializer(serializers.ModelSerializer):
         return obj.messages.filter(is_read=False).exclude(sender=user).count()
 
 class ConversationCreateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating a conversation between users.
+    Conversations are purely user-to-user, not linked to packages or travel listings.
+    """
     participant_ids = serializers.ListField(
         child=serializers.IntegerField(),
         write_only=True
     )
-    travel_listing_id = serializers.IntegerField(required=False)
-    package_request_id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Conversation
-        fields = ('participant_ids', 'travel_listing_id', 'package_request_id')
+        fields = ('participant_ids',)
 
     def validate(self, data):
-        if not data.get('travel_listing_id') and not data.get('package_request_id'):
+        if len(data.get('participant_ids', [])) < 2:
             raise serializers.ValidationError(
-                "Either travel_listing_id or package_request_id must be provided"
+                "At least two participant IDs are required"
             )
         return data
 
     def create(self, validated_data):
         participant_ids = validated_data.pop('participant_ids')
-        travel_listing_id = validated_data.pop('travel_listing_id', None)
-        package_request_id = validated_data.pop('package_request_id', None)
-
-        conversation = Conversation.objects.create(
-            travel_listing_id=travel_listing_id,
-            package_request_id=package_request_id
-        )
-
-        # Add participants
+        conversation = Conversation.objects.create()
         conversation.participants.add(*participant_ids)
-
         return conversation
 
 class NotificationSerializer(serializers.ModelSerializer):

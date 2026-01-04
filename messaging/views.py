@@ -34,18 +34,8 @@ class ConversationViewSet(StandardResponseViewSet):
         return ConversationSerializer
 
     def perform_create(self, serializer):
-        # This viewset is typically used for manual conversation creation.
-        # We can still use the helper if we want to ensure uniqueness.
+        # This viewset is used for manual conversation creation between users.
         conversation = serializer.save()
-        
-        # Log message_click event if related to a trip
-        if conversation.travel_listing:
-            from reporting.models import EventLog
-            EventLog.objects.create(
-                event_type='message_click',
-                user=self.request.user,
-                trip=conversation.travel_listing
-            )
 
     @extend_schema(tags=['Messaging'], description="Get all messages in a conversation")
     @action(detail=True, methods=['get'])
