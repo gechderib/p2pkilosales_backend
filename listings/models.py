@@ -4,6 +4,7 @@ from users.models import CustomUser
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from config.utils import upload_image, delete_image, optimized_image_url, auto_crop_url
+
 class TransportType(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(blank=True)
@@ -39,7 +40,7 @@ class TravelListing(models.Model):
     price_per_pc = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     price_per_file = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     price_full_suitcase = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    currency = models.CharField(max_length=10, default='USD')
+    currency = models.CharField(max_length=10, default='ETB')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='published')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

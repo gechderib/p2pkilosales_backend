@@ -105,7 +105,7 @@ class TravelListingSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         from users.serializers import UserProfileSerializer  # Lazy import to avoid circular import
-        representation['user'] = UserProfileSerializer(instance.user).data
+        representation['user'] = UserProfileSerializer(instance.user, context=self.context).data
         return representation
 
 class PackageRequestSerializer(serializers.ModelSerializer):
@@ -126,7 +126,7 @@ class PackageRequestSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         from users.serializers import UserProfileSerializer  # Lazy import to avoid circular import
-        representation['user'] = UserProfileSerializer(instance.user).data
+        representation['user'] = UserProfileSerializer(instance.user, context=self.context).data
         representation['package_types'] = PackageTypeSerializer(instance.package_types.all(), many=True).data
         return representation
 

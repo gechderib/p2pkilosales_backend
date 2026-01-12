@@ -133,6 +133,8 @@ class UserViewSet(StandardResponseViewSet):
     def get_permissions(self):
         if self.action in ['register', 'verify_otp', 'resend_otp', 'forgot_password', 'verify_phone_firebase', 'validate_otp']:
             return [AllowAny()]
+        if self.action == 'list':
+            return [IsAdminUser()]
         return super().get_permissions()
 
     def get_object(self):

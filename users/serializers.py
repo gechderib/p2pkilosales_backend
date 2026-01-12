@@ -80,6 +80,38 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_full_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}".strip()
     
+    def to_representation(self, instance):
+        """
+        Dynamically remove sensitive fields if the requesting user is not the owner or a superuser.
+        """
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        
+        if request:
+            is_owner = request.user == instance.user
+            is_superuser = request.user.is_superuser
+            
+            if not (is_owner or is_superuser):
+                sensitive_fields = [
+                    'front_side_identity_card_url',
+                    'back_side_identity_card_url',
+                    'issue_country',
+                    'issue_country_id',
+                    'selfie_photo_url',
+                    'notification_setting',
+                    'preferred_payment_method',
+                    'referral_code_used',
+                    'device_os',
+                    'app_version',
+                    'ip_address_last_login',
+                    'device_fingerprint',
+                    'two_factor_enabled',
+                    'kyc_method'
+                ]
+                for field in sensitive_fields:
+                    representation.pop(field, None)
+        
+        return representation
 
     class Meta:
         model = Profile
@@ -215,7 +247,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         """
         representation = super().to_representation(instance)
         if hasattr(instance, 'profile'):
-            representation['profile'] = ProfileSerializer(instance.profile).data
+            representation['profile'] = ProfileSerializer(instance.profile, context=self.context).data
         return representation
 
     def validate(self, data):
