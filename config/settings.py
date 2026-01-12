@@ -115,7 +115,7 @@ if DEBUG:
             'NAME': os.getenv('DJANGO_DB_NAME', 'p2pkilosales'),
             'USER': os.getenv('DJANGO_DB_USER', 'p2pkilosales'),
             'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'p2pkilosales'),
-            'HOST': os.getenv('DJANGO_DB_HOST', 'localhost'),
+            'HOST': os.getenv('DJANGO_DB_HOST', 'db'),
             'PORT': os.getenv('DJANGO_DB_PORT', '5432'),
         }
     }
