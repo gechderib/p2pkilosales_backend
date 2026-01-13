@@ -26,7 +26,7 @@ class TravelListingAdmin(admin.ModelAdmin):
         }),
         ('Pricing', {
             'fields': ('price_per_kg', 'price_per_document', 'price_per_phone', 'price_per_tablet', 
-                      'price_per_pc', 'price_per_file', 'price_full_suitcase')
+                      'price_per_pc', 'price_full_suitcase')
         }),
     )
 

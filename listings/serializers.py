@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import TravelListing, PackageRequest, Alert, Country, Region, TransportType, PackageType, Review
 from decimal import Decimal
 from django.db import models
+from django.db.models import Q, Sum
 
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,7 +52,7 @@ class TravelListingSerializer(serializers.ModelSerializer):
             'id', 'user', 'pickup', 'pickup_region_id', 'destination', 'destination_region_id',
             'travel_date', 'travel_time', 'mode_of_transport', 'mode_of_transport_id', 'maximum_weight_in_kg',
             'notes', 'price_per_kg', 'price_per_document', 'price_per_phone',
-            'price_per_tablet', 'price_per_pc', 'price_per_file', 'price_full_suitcase', 'currency', 'status',
+            'price_per_tablet', 'price_per_pc', 'price_full_suitcase', 'currency', 'status',
             'created_at', 'updated_at'
         ]
         read_only_fields = ['user', 'created_at', 'updated_at', 'pickup', 'destination', 'mode_of_transport']
@@ -62,7 +63,7 @@ class TravelListingSerializer(serializers.ModelSerializer):
         """
         pricing_fields = [
             'price_per_kg', 'price_per_document', 'price_per_phone',
-            'price_per_tablet', 'price_per_pc', 'price_per_file',
+            'price_per_tablet', 'price_per_pc',
             'price_full_suitcase'
         ]
         
@@ -101,6 +102,12 @@ class TravelListingSerializer(serializers.ModelSerializer):
             instance.destination_region = destination_region
             instance.destination_country = destination_region.country
         return super().update(instance, validated_data)
+
+    def validate_travel_date(self, value):
+        from django.utils import timezone
+        if value < timezone.now().date():
+            raise serializers.ValidationError("Travel date must be in the future.")
+        return value
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -168,13 +175,18 @@ class PackageRequestSerializer(serializers.ModelSerializer):
             from listings.models import PackageRequest
             accepted_weight = PackageRequest.objects.filter(
                 travel_listing=travel_listing, status='accepted'
-            ).aggregate(models.Sum('weight'))['weight__sum'] or Decimal('0.0')
+            ).aggregate(Sum('weight'))['weight__sum'] or Decimal('0.0')
+            
+            # If we are updating an existing request that is already accepted, 
+            # we should not count its own weight in the accepted_weight sum
+            if self.instance and self.instance.status == 'accepted':
+                accepted_weight -= self.instance.weight
+
             available_weight = travel_listing.maximum_weight_in_kg - accepted_weight
             if Decimal(weight) > available_weight:
                 raise serializers.ValidationError({
                     "weight": f"Requested weight ({weight}kg) exceeds available capacity ({available_weight}kg)."
                 })
-        print("The data is: ", data)
         return data
 
     def _calculate_price(self, validated_data, travel_listing):

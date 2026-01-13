@@ -410,13 +410,13 @@ class TelegramUserRegistrationSerializer(serializers.ModelSerializer):
 class TravelPriceSettingSerializer(serializers.ModelSerializer):
     class Meta:
         model = TravelPriceSetting
-        fields = ('user', 'price_per_kg', 'price_per_document', 'price_per_phone', 'price_per_tablet', 'price_per_pc', 'price_per_file', 'price_full_suitcase', 'created_at', 'updated_at')
+        fields = ('user', 'price_per_kg', 'price_per_document', 'price_per_phone', 'price_per_tablet', 'price_per_pc', 'price_full_suitcase', 'created_at', 'updated_at')
 
 class TravelPriceSettingMutationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TravelPriceSetting
-        fields = ('price_per_kg', 'price_per_document', 'price_per_phone', 'price_per_tablet', 'price_per_pc', 'price_per_file', 'price_full_suitcase')
+        fields = ('price_per_kg', 'price_per_document', 'price_per_phone', 'price_per_tablet', 'price_per_pc', 'price_full_suitcase')
     
     def validate(self, attrs):
         for key, value in attrs.items():

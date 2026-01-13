@@ -38,7 +38,6 @@ class TravelListing(models.Model):
     price_per_phone = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     price_per_tablet = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     price_per_pc = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    price_per_file = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     price_full_suitcase = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     currency = models.CharField(max_length=10, default='ETB')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='published')

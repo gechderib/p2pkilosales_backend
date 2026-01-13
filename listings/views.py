@@ -4,7 +4,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
-from django.db.models import Q
+from django.db.models import Q, Sum
 from datetime import datetime
 from .models import TravelListing, PackageRequest, Alert, Country, Region, Review
 from .serializers import TravelListingSerializer, PackageRequestSerializer, AlertSerializer, CountrySerializer, RegionSerializer, ReviewSerializer, TransportTypeSerializer, PackageTypeSerializer
@@ -122,7 +122,7 @@ class TravelListingViewSet(StandardResponseViewSet):
                 )
             else:
                 queryset = queryset.filter(
-                    Q(status='published') |
+                    Q(status__in=['published', 'fully-booked']) |
                     Q(user=self.request.user, status__in=['drafted', 'completed', 'canceled'])
                 )
         else:
@@ -134,7 +134,24 @@ class TravelListingViewSet(StandardResponseViewSet):
                     # Anonymous users can't see non-published listings
                     return TravelListing.objects.none()
             else:
-                queryset = queryset.filter(status='published')
+                queryset = queryset.filter(status__in=['published', 'fully-booked'])
+
+        # Filter out started travels for non-owners
+        from django.utils import timezone
+        now = timezone.now()
+        if self.request.user.is_authenticated:
+            queryset = queryset.filter(
+                Q(user=self.request.user) |
+                (
+                    Q(travel_date__gt=now.date()) |
+                    Q(travel_date=now.date(), travel_time__gt=now.time())
+                )
+            )
+        else:
+            queryset = queryset.filter(
+                Q(travel_date__gt=now.date()) |
+                Q(travel_date=now.date(), travel_time__gt=now.time())
+            )
 
         # Apply additional filters using IDs
         if pickup_country:
@@ -194,6 +211,49 @@ class TravelListingViewSet(StandardResponseViewSet):
         listing.save()
         serializer = self.get_serializer(listing)
         return self._standardize_response(Response(serializer.data))
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.package_requests.filter(status='accepted').exists():
+            return self._standardize_response(
+                Response(
+                    {"detail": "Cannot delete a travel listing that has accepted package requests."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            )
+        return super().destroy(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if self._has_travel_started(instance):
+            return self._standardize_response(
+                Response(
+                    {"detail": "Cannot update a travel listing once the travel has started."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            )
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if self._has_travel_started(instance):
+            return self._standardize_response(
+                Response(
+                    {"detail": "Cannot update a travel listing once the travel has started."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            )
+        return super().partial_update(request, *args, **kwargs)
+
+    def _has_travel_started(self, instance):
+        from django.utils import timezone
+        now = timezone.now()
+        travel_datetime = datetime.combine(instance.travel_date, instance.travel_time)
+        # Make travel_datetime aware if now is aware
+        if timezone.is_aware(now):
+            from django.utils.timezone import make_aware
+            travel_datetime = make_aware(travel_datetime)
+        return travel_datetime <= now
 
 @extend_schema(tags=['Package Requests'])
 class PackageRequestViewSet(StandardResponseViewSet):
@@ -370,15 +430,34 @@ class PackageRequestViewSet(StandardResponseViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # Update travel listing status if fully booked
+        travel_listing = package_request.travel_listing
+        accepted_weight = PackageRequest.objects.filter(
+            travel_listing=travel_listing, status='accepted'
+        ).aggregate(Sum('weight'))['weight__sum'] or Decimal('0.0')
+        
+        available_weight = travel_listing.maximum_weight_in_kg - accepted_weight
+        
+        if package_request.weight > available_weight:
+            return self._standardize_response(
+                Response(
+                    {"detail": f"Cannot accept request. Weight ({package_request.weight}kg) exceeds available capacity ({available_weight}kg)."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            )
+
         package_request.status = 'accepted'
         package_request.save()
-        # Update travel listing's available weight and status
-        travel_listing = package_request.travel_listing
-        travel_listing.maximum_weight_in_kg = Decimal(travel_listing.maximum_weight_in_kg) - Decimal(package_request.weight)
-        if travel_listing.maximum_weight_in_kg <= 0:
-            travel_listing.maximum_weight_in_kg = 0
+        
+        # Re-calculate accepted weight after saving this request
+        accepted_weight = PackageRequest.objects.filter(
+            travel_listing=travel_listing, status='accepted'
+        ).aggregate(Sum('weight'))['weight__sum'] or Decimal('0.0')
+        
+        available_weight = travel_listing.maximum_weight_in_kg - accepted_weight
+        if available_weight <= 0:
             travel_listing.status = 'fully-booked'
-        travel_listing.save()
+            travel_listing.save()
         serializer = self.get_serializer(package_request)
         # Send notification to package request owner
         notification = Notification.objects.create(
