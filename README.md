@@ -142,4 +142,3 @@ python manage.py collectstatic
 4. Push to the branch
 5. Create a Pull 
 
-6. 
