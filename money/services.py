@@ -23,7 +23,8 @@ class ChapaService:
         import hmac
         import hashlib
         
-        secret = self.config.get('CHAPA_SECRET_KEY')
+        # Use CHAPA_WEBHOOK_SECRET if available, otherwise fallback to CHAPA_SECRET_KEY
+        secret = self.config.get('CHAPA_WEBHOOK_SECRET') or self.config.get('CHAPA_SECRET_KEY')
         if not secret:
             return False
 
@@ -33,12 +34,18 @@ class ChapaService:
             # Usually, it's the raw body.
             if isinstance(body_data, dict):
                 payload = json.dumps(body_data, separators=(',', ':'))
-            else:
+                payload_bytes = payload.encode('utf-8')
+            elif isinstance(body_data, str):
                 payload = body_data
+                payload_bytes = payload.encode('utf-8')
+            elif isinstance(body_data, bytes):
+                payload_bytes = body_data
+            else:
+                payload_bytes = str(body_data).encode('utf-8')
 
             expected_signature = hmac.new(
                 secret.encode('utf-8'),
-                payload.encode('utf-8'),
+                payload_bytes,
                 hashlib.sha256
             ).hexdigest()
             

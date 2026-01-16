@@ -139,16 +139,39 @@ class ChapaWebhookView(StandardAPIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
+        import logging
+        import json
+        logger = logging.getLogger('app')
+        
+        try:
+            raw_body = request.body
+        except Exception as e:
+            logger.error(f"Error reading request body: {str(e)}")
+            return Response({'error': 'Could not read request body'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        logger.info(f"Webhook Headers: {request.headers}")
+        try:
+            logger.info(f"Webhook Body: {raw_body.decode('utf-8')}")
+        except:
+            logger.info(f"Webhook Body (bytes): {raw_body}")
+
         chapa_sig = request.headers.get('Chapa-Signature')
         x_chapa_sig = request.headers.get('x-chapa-signature')
         
+        logger.info(f"Chapa-Signature: {chapa_sig}")
+        logger.info(f"x-chapa-signature: {x_chapa_sig}")
+
         try:
             chapa_service = ChapaService()
             # Verify signature
-            if not chapa_service.verify_webhook_signature(request.data, chapa_sig, x_chapa_sig):
+            if not chapa_service.verify_webhook_signature(raw_body, chapa_sig, x_chapa_sig):
+                logger.error("Webhook signature verification failed")
                 return Response({'status': 'error', 'message': 'Invalid signature'}, status=status.HTTP_401_UNAUTHORIZED)
 
-            data = request.data
+            try:
+                data = json.loads(raw_body)
+            except json.JSONDecodeError:
+                return Response({'status': 'error', 'message': 'Invalid JSON'}, status=status.HTTP_400_BAD_REQUEST)
             event_type = data.get('type')
             event_status = data.get('status')
             
