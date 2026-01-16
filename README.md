@@ -142,3 +142,20 @@ python manage.py collectstatic
 4. Push to the branch
 5. Create a Pull 
 
+
+Poker game rule
+
+## Hand Rankings (Highest to Lowest) 
+ # Royal Flush: A, K, Q, J, 10 of the same suit.
+ # Straight Flush: Five consecutive cards of the same suit (e.g., 9♠, 10♠, J♠, Q♠, K♠).
+ # Four of a Kind: Four cards of the same rank (e.g., four 9s).
+ # Full House: Three of a kind plus a pair (e.g., three Kings and two Aces).
+ # Flush: Five cards of the same suit (not consecutive).
+ # Straight: Five consecutive cards (e.g., 4, 5, 6, 7, 8).
+ # Three of a Kind: Three cards of the same rank.
+ # Two Pair: Two different pairs.
+ # One Pair: Two cards of the same rank.
+ # High Card: If no one has any of the above, the highest card wins. 
+
+
+# Jack (11), Queen (12), King (13), and Ace (14).

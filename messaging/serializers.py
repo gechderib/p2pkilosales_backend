@@ -125,25 +125,84 @@ class ConversationCreateSerializer(serializers.ModelSerializer):
     """
     participant_ids = serializers.ListField(
         child=serializers.IntegerField(),
-        write_only=True
+        write_only=True,
+        required=False
     )
+    travel_listing_id = serializers.IntegerField(write_only=True, required=False)
+    package_request_id = serializers.IntegerField(write_only=True, required=False)
 
     class Meta:
         model = Conversation
-        fields = ('participant_ids',)
+        fields = ('participant_ids', 'travel_listing_id', 'package_request_id')
 
     def validate(self, data):
-        if len(data.get('participant_ids', [])) < 2:
+        request_user = self.context['request'].user
+        participant_ids = data.get('participant_ids')
+        travel_listing_id = data.get('travel_listing_id')
+        package_request_id = data.get('package_request_id')
+
+        if not any([participant_ids, travel_listing_id, package_request_id]):
             raise serializers.ValidationError(
-                "At least two participant IDs are required"
+                "One of participant_ids, travel_listing_id, or package_request_id is required."
             )
+
+        other_user = None
+
+        if participant_ids:
+            # Filter out the request user from the list if present
+            other_ids = [pid for pid in participant_ids if pid != request_user.id]
+            
+            if len(other_ids) != 1:
+                raise serializers.ValidationError("Currently, conversations must be between exactly two users (you and one other).")
+            
+            participant_id = other_ids[0]
+            
+            from users.models import CustomUser
+            try:
+                other_user = CustomUser.objects.get(id=participant_id)
+            except CustomUser.DoesNotExist:
+                raise serializers.ValidationError(f"User with id {participant_id} does not exist.")
+
+        elif travel_listing_id:
+            from listings.models import TravelListing
+            try:
+                listing = TravelListing.objects.get(id=travel_listing_id)
+                other_user = listing.user
+            except TravelListing.DoesNotExist:
+                raise serializers.ValidationError("TravelListing with provided id does not exist.")
+
+        elif package_request_id:
+            from listings.models import PackageRequest
+            try:
+                pkg_request = PackageRequest.objects.get(id=package_request_id)
+                # If request user is the package request creator, other user is listing owner
+                if pkg_request.user == request_user:
+                    other_user = pkg_request.travel_listing.user
+                # If request user is the listing owner, other user is package request creator
+                elif pkg_request.travel_listing.user == request_user:
+                    other_user = pkg_request.user
+                else:
+                    raise serializers.ValidationError(
+                        "You are not a participant in this package request."
+                    )
+            except PackageRequest.DoesNotExist:
+                raise serializers.ValidationError("PackageRequest with provided id does not exist.")
+
+        if request_user == other_user:
+            raise serializers.ValidationError("You cannot create a conversation with yourself.")
+
+        # Store the resolved other_user in validated_data for create method
+        data['other_user'] = other_user
         return data
 
     def create(self, validated_data):
-        participant_ids = validated_data.pop('participant_ids')
-        conversation = Conversation.objects.create()
-        conversation.participants.add(*participant_ids)
+        request_user = self.context['request'].user
+        other_user = validated_data['other_user']
+        conversation, created = Conversation.get_or_create_conversation(request_user, other_user)
         return conversation
+
+    def to_representation(self, instance):
+        return ConversationSerializer(instance, context=self.context).data
 
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
