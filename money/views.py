@@ -300,3 +300,13 @@ class VerifyPendingTransfersView(StandardAPIView):
                 results['errors'].append(f"Error verifying {tx.reference}: {str(e)}")
         
         return Response(results, status=status.HTTP_200_OK)
+
+class UserTransactionViewSet(StandardResponseViewSet):
+    """
+    ViewSet for users to view their own transactions.
+    """
+    serializer_class = TransactionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Transaction.objects.filter(wallet__user=self.request.user).order_by('-created_at')

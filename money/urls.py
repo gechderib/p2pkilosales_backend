@@ -3,11 +3,13 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     PaymentGatewayViewSet, DepositView, ChapaWebhookView, 
     VerifyTransactionView, WalletBalanceView, WithdrawalView, 
-    BanksListView, TransferApprovalView, VerifyTransferView, VerifyPendingTransfersView
+    BanksListView, TransferApprovalView, VerifyTransferView, VerifyPendingTransfersView,
+    UserTransactionViewSet
 )
 
 router = DefaultRouter()
 router.register(r'gateways', PaymentGatewayViewSet)
+router.register(r'transactions', UserTransactionViewSet, basename='user-transactions')
 
 urlpatterns = [
     path('', include(router.urls)),
