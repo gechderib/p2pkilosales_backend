@@ -66,6 +66,18 @@ class ConversationViewSet(StandardResponseViewSet):
             # Send message through WebSocket
             message_data = MessageSerializer(message).data
             send_message_to_conversation(conversation.id, message_data)
+
+            # Send notification to other participants
+            from .utils import send_notification_to_user
+            for participant in conversation.participants.all():
+                if participant != request.user:
+                    notification = Notification.objects.create(
+                        user=participant,
+                        conversation=conversation,
+                        message=f"New message from {request.user.username}: {message.content[:30]}..."
+                    )
+                    notification_data = NotificationSerializer(notification).data
+                    send_notification_to_user(participant.id, notification_data)
             
             return Response(message_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

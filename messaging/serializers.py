@@ -50,7 +50,7 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = ('id', 'conversation', 'sender', 'content', 'is_read',
                  'created_at', 'attachments', 'uploaded_files')
-        read_only_fields = ('created_at', 'is_read')
+        read_only_fields = ('created_at', 'is_read', 'conversation')
 
     def create(self, validated_data):
         uploaded_files = validated_data.pop('uploaded_files', [])
@@ -207,5 +207,5 @@ class ConversationCreateSerializer(serializers.ModelSerializer):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = ('id', 'user', 'travel_listing', 'message', 'is_read', 'created_at')
+        fields = ('id', 'user', 'travel_listing', 'conversation', 'message', 'is_read', 'created_at')
         read_only_fields = ('created_at',) 
