@@ -81,3 +81,38 @@ class TransactionAdmin(admin.ModelAdmin):
     list_filter = ('transaction_type', 'status', 'created_at')
     search_fields = ('reference', 'external_reference', 'wallet__user__username')
     readonly_fields = ('reference', 'created_at', 'updated_at')
+    actions = ['verify_transactions']
+
+    @admin.action(description='Verify selected transactions')
+    def verify_transactions(self, request, queryset):
+        service = ChapaService()
+        success_count = 0
+        failed_count = 0
+        processed_count = 0
+
+        for tx in queryset:
+            if tx.status != Transaction.Status.PENDING:
+                continue
+            
+            processed_count += 1
+            try:
+                success = False
+                message = ""
+                
+                if tx.transaction_type == Transaction.TransactionType.DEPOSIT:
+                    success, message = service.verify_transaction(tx.reference)
+                elif tx.transaction_type == Transaction.TransactionType.WITHDRAWAL:
+                    success, message = service.verify_transfer(tx.reference)
+                
+                if success:
+                    success_count += 1
+                else:
+                    failed_count += 1
+            except Exception as e:
+                failed_count += 1
+        
+        self.message_user(
+            request,
+            f"Processed {processed_count} transactions. Success: {success_count}, Failed: {failed_count}.",
+            level=messages.SUCCESS if failed_count == 0 else messages.WARNING
+        )
