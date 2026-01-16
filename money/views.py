@@ -239,3 +239,41 @@ class VerifyTransferView(StandardAPIView):
                 }, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class VerifyPendingTransfersView(StandardAPIView):
+    """
+    Admin-only view to manually trigger verification of all pending transfers.
+    """
+    permission_classes = [permissions.IsAdminUser]
+
+    def post(self, request):
+        pending_transactions = Transaction.objects.filter(status=Transaction.Status.PENDING)
+        service = ChapaService()
+        
+        results = {
+            'total_pending': pending_transactions.count(),
+            'processed': 0,
+            'success': 0,
+            'failed': 0,
+            'errors': []
+        }
+
+        for tx in pending_transactions:
+            try:
+                success = False
+                message = ""
+                
+                if tx.transaction_type == Transaction.TransactionType.DEPOSIT:
+                    success, message = service.verify_transaction(tx.reference)
+                elif tx.transaction_type == Transaction.TransactionType.WITHDRAWAL:
+                    success, message = service.verify_transfer(tx.reference)
+                
+                results['processed'] += 1
+                if success:
+                    results['success'] += 1
+                else:
+                    results['failed'] += 1
+            except Exception as e:
+                results['errors'].append(f"Error verifying {tx.reference}: {str(e)}")
+        
+        return Response(results, status=status.HTTP_200_OK)

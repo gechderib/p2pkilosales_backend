@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     PaymentGatewayViewSet, DepositView, ChapaWebhookView, 
     VerifyTransactionView, WalletBalanceView, WithdrawalView, 
-    BanksListView, TransferApprovalView, VerifyTransferView
+    BanksListView, TransferApprovalView, VerifyTransferView, VerifyPendingTransfersView
 )
 
 router = DefaultRouter()
@@ -21,4 +21,5 @@ urlpatterns = [
 
     path('webhook/chapa/', ChapaWebhookView.as_view(), name='chapa-webhook'),
     path('webhook/chapa/transfer-approval/', TransferApprovalView.as_view(), name='chapa-transfer-approval'),
+    path('verify-pending-transfers/', VerifyPendingTransfersView.as_view(), name='verify-pending-transfers'),
 ]
