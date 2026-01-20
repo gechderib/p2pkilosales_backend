@@ -25,3 +25,6 @@ urlpatterns = [
     path('webhook/chapa/transfer-approval/', TransferApprovalView.as_view(), name='chapa-transfer-approval'),
     path('verify-pending-transfers/', VerifyPendingTransfersView.as_view(), name='verify-pending-transfers'),
 ]
+
+
+

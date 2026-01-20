@@ -81,6 +81,17 @@ class TravelListingSerializer(serializers.ModelSerializer):
                 "At least one pricing method (e.g., price per kg, per document, or full suitcase) must be provided."
             )
         
+        # Check wallet balance for listing creation
+        request = self.context.get('request')
+        if request and not self.instance:  # Only on creation, not update
+            from money.wallet_service import WalletService
+            if not WalletService.check_balance_for_listing(request.user):
+                from money.models import PlatformConfig
+                config = PlatformConfig.get_config()
+                raise serializers.ValidationError(
+                    f"Insufficient wallet balance. Minimum {config.min_balance_for_travel_listing} ETB required to create a travel listing."
+                )
+        
         return data
 
     def create(self, validated_data):
@@ -90,7 +101,20 @@ class TravelListingSerializer(serializers.ModelSerializer):
         validated_data['pickup_country'] = pickup_region.country
         validated_data['destination_region'] = destination_region
         validated_data['destination_country'] = destination_region.country
-        return super().create(validated_data)
+        
+        # Create the listing
+        listing = super().create(validated_data)
+        
+        # Deduct listing fee from user's wallet
+        from money.wallet_service import WalletService, InsufficientBalanceError
+        try:
+            WalletService.deduct_listing_fee(listing.user, listing)
+        except InsufficientBalanceError as e:
+            # If fee deduction fails, delete the listing and raise error
+            listing.delete()
+            raise serializers.ValidationError(str(e))
+        
+        return listing
 
     def update(self, instance, validated_data):
         if 'pickup_region' in validated_data:
@@ -187,6 +211,22 @@ class PackageRequestSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     "weight": f"Requested weight ({weight}kg) exceeds available capacity ({available_weight}kg)."
                 })
+        
+        # Check wallet balance for package request creation
+        if not self.instance:  # Only on creation
+            request = self.context.get('request')
+            if request and travel_listing:
+                # Calculate total price to check if user has enough balance
+                total_price = self._calculate_price(data, travel_listing)
+                from money.wallet_service import WalletService
+                if not WalletService.check_balance_for_request(request.user, total_price):
+                    from money.models import PlatformConfig
+                    config = PlatformConfig.get_config()
+                    required = config.min_balance_for_package_request + total_price
+                    raise serializers.ValidationError({
+                        "wallet": f"Insufficient wallet balance. You need {required} ETB (fee: {config.min_balance_for_package_request}, package price: {total_price})."
+                    })
+        
         return data
 
     def _calculate_price(self, validated_data, travel_listing):
@@ -223,7 +263,20 @@ class PackageRequestSerializer(serializers.ModelSerializer):
         travel_listing = validated_data['travel_listing']
         total_price = self._calculate_price(validated_data, travel_listing)
         validated_data['total_price'] = total_price
-        return super().create(validated_data)
+        
+        # Create the package request
+        package_request = super().create(validated_data)
+        
+        # Deduct fee and lock payment amount
+        from money.wallet_service import WalletService, InsufficientBalanceError
+        try:
+            WalletService.deduct_request_fee_and_lock_amount(package_request.user, package_request)
+        except InsufficientBalanceError as e:
+            # If fee deduction/lock fails, delete the package request and raise error
+            package_request.delete()
+            raise serializers.ValidationError(str(e))
+        
+        return package_request
 
     def update(self, instance, validated_data):
         travel_listing = validated_data.get('travel_listing', instance.travel_listing)

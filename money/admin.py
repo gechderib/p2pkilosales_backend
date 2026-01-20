@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.urls import path
 from django.forms import widgets
 import json
-from .models import Wallet, PaymentGateway, Transaction, Bank
+from .models import Wallet, PaymentGateway, Transaction, Bank, PlatformConfig
 from .services import ChapaService
 
 class PrettyJSONWidget(widgets.Textarea):
@@ -77,9 +77,9 @@ class PaymentGatewayAdmin(admin.ModelAdmin):
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('reference', 'wallet', 'transaction_type', 'amount', 'status', 'created_at')
-    list_filter = ('transaction_type', 'status', 'created_at')
-    search_fields = ('reference', 'external_reference', 'wallet__user__username')
+    list_display = ('reference', 'wallet', 'transaction_type', 'transaction_category', 'amount', 'status', 'created_at')
+    list_filter = ('transaction_type', 'transaction_category', 'status', 'created_at')
+    search_fields = ('reference', 'external_reference', 'wallet__user__username', 'description')
     readonly_fields = ('reference', 'created_at', 'updated_at')
     actions = ['verify_transactions']
 
@@ -116,3 +116,39 @@ class TransactionAdmin(admin.ModelAdmin):
             f"Processed {processed_count} transactions. Success: {success_count}, Failed: {failed_count}.",
             level=messages.SUCCESS if failed_count == 0 else messages.WARNING
         )
+
+@admin.register(PlatformConfig)
+class PlatformConfigAdmin(admin.ModelAdmin):
+    """
+    Admin for Platform Configuration (Singleton).
+    """
+    list_display = [
+        'min_balance_for_travel_listing',
+        'min_balance_for_package_request',
+        'platform_commission_percentage',
+        'tax_percentage',
+        'updated_at'
+    ]
+    
+    fieldsets = (
+        ('Travel & Package Requirements', {
+            'fields': ('min_balance_for_travel_listing', 'min_balance_for_package_request')
+        }),
+        ('Platform Fees', {
+            'fields': ('platform_commission_percentage', 'tax_percentage')
+        }),
+        ('Deposit Limits', {
+            'fields': ('min_deposit_amount', 'max_deposit_amount')
+        }),
+        ('Withdrawal Limits', {
+            'fields': ('min_withdrawal_amount', 'max_withdrawal_amount')
+        }),
+    )
+    
+    def has_add_permission(self, request):
+        """Only allow one instance."""
+        return not PlatformConfig.objects.exists()
+    
+    def has_delete_permission(self, request, obj=None):
+        """Prevent deletion."""
+        return False

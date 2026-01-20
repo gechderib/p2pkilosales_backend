@@ -30,11 +30,22 @@ class Transaction(models.Model):
     class TransactionType(models.TextChoices):
         DEPOSIT = 'DEPOSIT', _('Deposit')
         WITHDRAWAL = 'WITHDRAWAL', _('Withdrawal')
+        LISTING_FEE = 'LISTING_FEE', _('Travel Listing Fee')
+        REQUEST_FEE = 'REQUEST_FEE', _('Package Request Fee')
+        PAYMENT_LOCK = 'PAYMENT_LOCK', _('Payment Lock')
+        PAYMENT_UNLOCK = 'PAYMENT_UNLOCK', _('Payment Unlock')
+        PAYMENT_RELEASE = 'PAYMENT_RELEASE', _('Payment Release')
+        COMMISSION = 'COMMISSION', _('Platform Commission')
 
     class Status(models.TextChoices):
         PENDING = 'PENDING', _('Pending')
         SUCCESS = 'SUCCESS', _('Success')
         FAILED = 'FAILED', _('Failed')
+    
+    class TransactionCategory(models.TextChoices):
+        USER_TRANSACTION = 'USER_TRANSACTION', _('User Transaction')
+        SYSTEM_REVENUE = 'SYSTEM_REVENUE', _('System Revenue')
+        INTERNAL_TRANSFER = 'INTERNAL_TRANSFER', _('Internal Transfer')
 
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE, related_name='transactions')
     amount = models.DecimalField(max_digits=12, decimal_places=2)
@@ -44,6 +55,39 @@ class Transaction(models.Model):
     external_reference = models.CharField(max_length=100, blank=True, null=True)
     gateway = models.ForeignKey(PaymentGateway, on_delete=models.SET_NULL, null=True, blank=True)
     description = models.TextField(blank=True)
+    
+    # Ledger-based fields
+    transaction_category = models.CharField(
+        max_length=20, 
+        choices=TransactionCategory.choices, 
+        default=TransactionCategory.USER_TRANSACTION,
+        help_text="Category for ledger tracking"
+    )
+    recipient_wallet = models.ForeignKey(
+        Wallet, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='received_transactions',
+        help_text="Recipient wallet for transfers"
+    )
+    
+    # Relationship fields for tracking
+    related_listing = models.ForeignKey(
+        'listings.TravelListing',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='transactions'
+    )
+    related_package_request = models.ForeignKey(
+        'listings.PackageRequest',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='transactions'
+    )
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -68,3 +112,94 @@ class Bank(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.gateway.name})"
+
+class PlatformConfig(models.Model):
+    """
+    Singleton model for platform-wide money configuration.
+    Only one instance should exist.
+    """
+    # Travel Listing Requirements
+    min_balance_for_travel_listing = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=10.00,
+        help_text="Minimum wallet balance required to create a travel listing"
+    )
+    
+    # Package Request Requirements
+    min_balance_for_package_request = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=10.00,
+        help_text="Minimum wallet balance required to create a package request"
+    )
+    
+    # Platform Fees
+    platform_commission_percentage = models.DecimalField(
+        max_digits=5, 
+        decimal_places=2, 
+        default=5.00,
+        help_text="Percentage commission taken from completed package deliveries"
+    )
+    
+    tax_percentage = models.DecimalField(
+        max_digits=5, 
+        decimal_places=2, 
+        default=15.00,
+        help_text="Tax/VAT percentage"
+    )
+    
+    # Deposit Limits
+    min_deposit_amount = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=10.00,
+        help_text="Minimum amount for deposits"
+    )
+    
+    max_deposit_amount = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=10000.00,
+        help_text="Maximum amount for deposits"
+    )
+    
+    # Withdrawal Limits
+    min_withdrawal_amount = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=50.00,
+        help_text="Minimum amount for withdrawals"
+    )
+    
+    max_withdrawal_amount = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=5000.00,
+        help_text="Maximum amount for withdrawals"
+    )
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Platform Configuration"
+        verbose_name_plural = "Platform Configuration"
+    
+    def save(self, *args, **kwargs):
+        """Enforce singleton pattern - only one config instance allowed."""
+        self.pk = 1
+        super().save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        """Prevent deletion of the config."""
+        pass
+    
+    @classmethod
+    def get_config(cls):
+        """Get or create the singleton config instance."""
+        config, created = cls.objects.get_or_create(pk=1)
+        return config
+    
+    def __str__(self):
+        return "Platform Configuration"

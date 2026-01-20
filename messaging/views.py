@@ -41,7 +41,18 @@ class ConversationViewSet(StandardResponseViewSet):
     @action(detail=True, methods=['get'])
     def messages(self, request, pk=None):
         conversation = self.get_object()
-        messages = conversation.messages.all()
+        messages = conversation.messages.all().order_by('-created_at')  # Latest first
+        
+        # Optional filtering
+        is_read = request.query_params.get('is_read')
+        if is_read is not None:
+            is_read_bool = is_read.lower() in ['true', '1', 'yes']
+            messages = messages.filter(is_read=is_read_bool)
+        
+        # Optional sender filter
+        sender_id = request.query_params.get('sender_id')
+        if sender_id:
+            messages = messages.filter(sender_id=sender_id)
         
         page = self.paginate_queryset(messages)
         if page is not None:

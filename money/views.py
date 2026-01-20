@@ -2,7 +2,7 @@ from rest_framework import viewsets, status, permissions
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from django.conf import settings
-from .models import PaymentGateway, Transaction, Wallet, Bank
+from .models import PaymentGateway, Transaction, Wallet, Bank, PlatformConfig
 from .services import ChapaService
 from .serializers import PaymentGatewaySerializer, DepositSerializer, WalletSerializer, TransactionSerializer, WithdrawalSerializer, BankSerializer
 from config.views import StandardResponseViewSet, StandardAPIView
@@ -53,6 +53,20 @@ class WithdrawalView(StandardAPIView):
         serializer = WithdrawalSerializer(data=request.data)
         if serializer.is_valid():
             user = request.user
+            amount = serializer.validated_data['amount']
+            
+            # Validate against platform configuration
+            config = PlatformConfig.get_config()
+            if amount < config.min_withdrawal_amount:
+                return Response({
+                    'error': f'Minimum withdrawal amount is {config.min_withdrawal_amount} {user.wallet.currency}'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            if amount > config.max_withdrawal_amount:
+                return Response({
+                    'error': f'Maximum withdrawal amount is {config.max_withdrawal_amount} {user.wallet.currency}'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
             try:
                 chapa_service = ChapaService()
                 account_name = serializer.validated_data.get('account_name')
@@ -61,7 +75,7 @@ class WithdrawalView(StandardAPIView):
 
                 data, transaction = chapa_service.initiate_transfer(
                     user=user,
-                    amount=serializer.validated_data['amount'],
+                    amount=amount,
                     bank_code=serializer.validated_data['bank_code'],
                     account_number=serializer.validated_data['account_number'],
                     account_name=account_name
