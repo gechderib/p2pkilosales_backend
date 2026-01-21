@@ -68,7 +68,7 @@ cloudinary.config(
 def upload_image(image_path, public_id=None):
     upload_result = cloudinary.uploader.upload(image_path, public_id=public_id)
     print(upload_result)
-    return upload_result["secure_url"]
+    return upload_result
 
 # upload multiple files at once
 def upload_images(image_paths, public_ids=None):

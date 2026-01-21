@@ -165,13 +165,13 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         instance = Profile.objects.create(**validated_data)
         if profile_picture:
-            instance.profile_picture_url = upload_image(profile_picture, f"verlo/profile/profile_{instance.user.id}")
+            instance.profile_picture_url = upload_image(profile_picture, f"verlo/profile/profile_{instance.user.id}")['secure_url']
         if front_side_identity_card:
-            instance.front_side_identity_card_url = upload_image(front_side_identity_card, f"verlo/front_id/front_id_{instance.user.id}")
+            instance.front_side_identity_card_url = upload_image(front_side_identity_card, f"verlo/front_id/front_id_{instance.user.id}")['secure_url']
         if back_side_identity_card:
-            instance.back_side_identity_card_url = upload_image(back_side_identity_card, f"verlo/back_id/back_id_{instance.user.id}")
+            instance.back_side_identity_card_url = upload_image(back_side_identity_card, f"verlo/back_id/back_id_{instance.user.id}")['secure_url']
         if selfie_photo:
-            instance.selfie_photo_url = upload_image(selfie_photo, f"verlo/selfie/selfie_{instance.user.id}")  
+            instance.selfie_photo_url = upload_image(selfie_photo, f"verlo/selfie/selfie_{instance.user.id}")['secure_url']
         instance.save() 
         return instance
 
@@ -188,16 +188,16 @@ class ProfileSerializer(serializers.ModelSerializer):
         if profile_picture:
             # if instance.profile_picture_url:
             #     delete_image(instance.profile_picture_url.split('/')[-1].split('.')[0])
-            instance.profile_picture_url = upload_image(profile_picture, f"verlo/profile/profile_{instance.user.id}")
+            instance.profile_picture_url = upload_image(profile_picture, f"verlo/profile/profile_{instance.user.id}")['secure_url']
         
         if front_side_identity_card:
-            instance.front_side_identity_card_url = upload_image(front_side_identity_card, f"verlo/front_id/front_id_{instance.user.id}")
+            instance.front_side_identity_card_url = upload_image(front_side_identity_card, f"verlo/front_id/front_id_{instance.user.id}")['secure_url']
         
         if back_side_identity_card:
-            instance.back_side_identity_card_url = upload_image(back_side_identity_card, f"verlo/back_id/back_id_{instance.user.id}")
+            instance.back_side_identity_card_url = upload_image(back_side_identity_card, f"verlo/back_id/back_id_{instance.user.id}")['secure_url']
         
         if selfie_photo:
-            instance.selfie_photo_url = upload_image(selfie_photo, f"verlo/selfie/selfie_{instance.user.id}")
+            instance.selfie_photo_url = upload_image(selfie_photo, f"verlo/selfie/selfie_{instance.user.id}")['secure_url']
 
         instance.save()
         return instance

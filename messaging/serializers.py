@@ -6,8 +6,8 @@ class MessageAttachmentSerializer(serializers.ModelSerializer):
     file = serializers.FileField(write_only=True, required=False)
     class Meta:
         model = MessageAttachment
-        fields = ('id', 'file', 'file_name', 'file_url', 'file_type', 'created_at')
-        read_only_fields = ('file_name', 'file_url', 'file_type', 'created_at')
+        fields = ('id', 'file', 'file_name', 'file_url', 'public_id', 'file_type', 'created_at')
+        read_only_fields = ('file_name', 'file_url', 'public_id', 'file_type', 'created_at')
     
     def create(self, validated_data):
         file = validated_data.pop('file', None)
@@ -18,8 +18,9 @@ class MessageAttachmentSerializer(serializers.ModelSerializer):
         instance = MessageAttachment.objects.create(**validated_data)
 
         if file:
-            file_url = upload_image(file, public_id=f'message_attachments/{instance.message.id}/{file.name}')
-            instance.file_url = file_url
+            upload_result = upload_image(file, public_id=f'message_attachments/{instance.message.id}/{file.name}')
+            instance.file_url = upload_result['secure_url']
+            instance.public_id = upload_result['public_id']
             instance.save()
         return instance
     
@@ -29,10 +30,18 @@ class MessageAttachmentSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
 
         if file:
+            old_public_id = instance.public_id
             instance.file_name = file.name
             instance.file_type = getattr(file, 'content_type', '')
-            file_url = upload_image(file, public_id=f'message_attachments/{instance.message.id}/{file.name}')
-            instance.file_url = file_url
+            upload_result = upload_image(file, public_id=f'message_attachments/{instance.message.id}/{file.name}')
+            instance.file_url = upload_result['secure_url']
+            instance.public_id = upload_result['public_id']
+            
+            if old_public_id and old_public_id != instance.public_id:
+                try:
+                    delete_image(old_public_id)
+                except:
+                    pass
         
         instance.save()
         return instance
@@ -45,11 +54,16 @@ class MessageSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False
     )
+    attachment_ids_to_remove = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        required=False
+    )
 
     class Meta:
         model = Message
         fields = ('id', 'conversation', 'sender', 'content', 'is_read',
-                 'created_at', 'attachments', 'uploaded_files')
+                 'created_at', 'attachments', 'uploaded_files', 'attachment_ids_to_remove')
         read_only_fields = ('created_at', 'is_read', 'conversation')
 
     def create(self, validated_data):
@@ -66,11 +80,12 @@ class MessageSerializer(serializers.ModelSerializer):
         
         # Handle file attachments
         for file in uploaded_files:
-            file_url = upload_image(file, public_id=f'message_attachments/{message.id}/{file.name}')
+            upload_result = upload_image(file, public_id=f'message_attachments/{message.id}/{file.name}')
             MessageAttachment.objects.create(
                 message=message,
                 # file=file,
-                file_url=file_url,
+                file_url=upload_result['secure_url'],
+                public_id=upload_result['public_id'],
                 file_name=file.name,
                 file_type=file.content_type
             )
@@ -78,19 +93,25 @@ class MessageSerializer(serializers.ModelSerializer):
         return message
     
     def update(self, instance, validated_data):
+        attachment_ids_to_remove = validated_data.pop('attachment_ids_to_remove', [])
         uploaded_files = validated_data.pop('uploaded_files', [])
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
+        # Handle attachment removal
+        if attachment_ids_to_remove:
+            MessageAttachment.objects.filter(id__in=attachment_ids_to_remove, message=instance).delete()
+
         # Handle file attachments
         if uploaded_files:
             for file in uploaded_files:
-                file_url = upload_image(file, public_id=f'message_attachments/{instance.id}/{file.name}')
+                upload_result = upload_image(file, public_id=f'message_attachments/{instance.id}/{file.name}')
                 MessageAttachment.objects.create(
                     message=instance,
                     # file=file,
-                    file_url=file_url,
+                    file_url=upload_result['secure_url'],
+                    public_id=upload_result['public_id'],
                     file_name=file.name,
                     file_type=file.content_type
                 )
