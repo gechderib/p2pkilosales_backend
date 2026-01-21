@@ -9,7 +9,7 @@ from .serializers import (
     ConversationSerializer, ConversationCreateSerializer,
     MessageSerializer, MessageAttachmentSerializer, NotificationSerializer
 )
-from .utils import send_message_to_conversation, send_typing_indicator
+from .utils import send_message_to_conversation
 from config.views import StandardResponseViewSet
 from .permissions import IsMessageOwner
 from config.utils import standard_response
@@ -131,13 +131,24 @@ class MessageViewSet(StandardResponseViewSet):
             return [permissions.IsAuthenticated(), IsMessageOwner()]
         return [permissions.IsAuthenticated()]
 
-    @extend_schema(tags=['Messaging'], description="Mark a message as read")
+    @extend_schema(tags=['Messaging'], description="Mark a message as read (and all previous messages in the conversation)")
     @action(detail=True, methods=['post'])
     def mark_as_read(self, request, pk=None):
         message = self.get_object()
-        message.is_read = True
-        message.save()
-        return Response(self.get_serializer(message).data)
+        
+        # Mark this message and all previous messages in this conversation as read
+        updated_count = Message.objects.filter(
+            conversation=message.conversation,
+            id__lte=message.id
+        ).exclude(sender=request.user).update(is_read=True)
+        
+        # Broadcast via WebSocket
+        broadcast_messages_read(message.conversation.id, request.user.id, message.id)
+        
+        return standard_response(
+            data={'updated_count': updated_count, 'last_message_id': message.id},
+            status_code=status.HTTP_200_OK
+        )
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -165,20 +176,6 @@ class MessageViewSet(StandardResponseViewSet):
                 error=["Messages older than 24 hours cannot be deleted."]
             )
         return super().destroy(request, *args, **kwargs)
-
-    @extend_schema(tags=['Messaging'], description="Mark multiple messages as read")
-    @action(detail=False, methods=['post'], url_path='mark_multiple_as_read')
-    def mark_multiple_as_read(self, request):
-        message_ids = request.data.get('message_ids', [])
-        if not isinstance(message_ids, list) or not all(isinstance(mid, int) for mid in message_ids):
-            return standard_response(error=['message_ids must be a list of integers.'], status_code=status.HTTP_400_BAD_REQUEST)
-        user = request.user
-        # Only mark as read messages the user has access to
-        messages = Message.objects.filter(id__in=message_ids, conversation__participants=user)
-        updated_count = messages.update(is_read=True)
-        # Return the updated messages
-        serializer = self.get_serializer(messages, many=True)
-        return standard_response(data={'updated_count': updated_count, 'messages': serializer.data}, status_code=status.HTTP_200_OK)
 
 
 @extend_schema(tags=['Messaging'])
