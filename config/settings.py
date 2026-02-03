@@ -112,11 +112,11 @@ if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DJANGO_DB_NAME', 'p2pkilosales'),
-            'USER': os.getenv('DJANGO_DB_USER', 'p2pkilosales'),
-            'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'p2pkilosales'),
-            'HOST': os.getenv('DJANGO_DB_HOST', 'db'),
-            'PORT': os.getenv('DJANGO_DB_PORT', '5432'),
+            'NAME': os.getenv('DJANGO_DB_NAME'),
+            'USER': os.getenv('DJANGO_DB_USER'),
+            'PASSWORD': os.getenv('DJANGO_DB_PASSWORD'),
+            'HOST': os.getenv('DJANGO_DB_HOST'),
+            'PORT': os.getenv('DJANGO_DB_PORT'),
         }
     }
 else:
@@ -233,7 +233,9 @@ SIMPLE_JWT = {
 }
 
 # Channel Layers Configuration
-REDIS_HOSTS = [os.getenv("REDIS_URL")] if not DEBUG else [("redis", 6379) or ("localhost", 6379)]
+# REDIS_HOSTS = [os.getenv("REDIS_URL")] if not DEBUG else [("redis", 6379) or ("localhost", 6379)]
+REDIS_HOSTS = [("redis", 6379) or ("localhost", 6379)]
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
